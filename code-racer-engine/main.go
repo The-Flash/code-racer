@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/The-Flash/code-racer/handlers"
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
 )
@@ -23,6 +24,12 @@ func main() {
 	if !exists {
 		port = "8000" // default port
 	}
+
+	router.
+		HandleFunc("/api/v1/exec", handlers.CodeExecHandler).
+		Methods("POST").
+		Headers("Content-Type", "application/json")
+
 	fmt.Println("Server is running on port", port)
 	http.ListenAndServe(":"+port, router)
 }
