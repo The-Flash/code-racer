@@ -1,0 +1,14 @@
+runtimes:
+  - language: python
+    image: python:3-alpine3.17
+    instances: 5
+    aliases:
+      - python
+      - py
+  - language: node
+    image: node:18-alpine3.17
+    instances: 5
+    aliases:
+      - nodejs
+      - javascript
+      - js
