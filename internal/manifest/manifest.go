@@ -5,7 +5,8 @@ import (
 )
 
 type Manifest struct {
-	Runtimes []ManifestRuntime `yaml:"runtimes"`
+	Runtimes      []ManifestRuntime `yaml:"runtimes"`
+	PeriodMinutes int               `yaml:"periodMinutes"`
 }
 
 type ManifestRuntime struct {
