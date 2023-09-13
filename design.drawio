@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e">
     <diagram id="xYpieU3OsDlBosfl1Ia8" name="Page-1">
-        <mxGraphModel dx="2520" dy="1013" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+        <mxGraphModel dx="1260" dy="247" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -32,59 +32,59 @@
         </mxGraphModel>
     </diagram>
     <diagram id="eVpEn63QmF_tsTFyUnMM" name="Page-2">
-        <mxGraphModel dx="1523" dy="904" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+        <mxGraphModel dx="410" dy="209" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
-                <mxCell id="ty_xhHiwv_qMUtKukG_b-3" value="" style="edgeStyle=none;html=1;" edge="1" parent="1" source="ty_xhHiwv_qMUtKukG_b-1" target="ty_xhHiwv_qMUtKukG_b-2">
+                <mxCell id="ty_xhHiwv_qMUtKukG_b-3" value="" style="edgeStyle=none;html=1;" parent="1" source="ty_xhHiwv_qMUtKukG_b-1" target="ty_xhHiwv_qMUtKukG_b-2" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="ty_xhHiwv_qMUtKukG_b-1" value="Start" style="ellipse;shape=doubleEllipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                <mxCell id="ty_xhHiwv_qMUtKukG_b-1" value="Start" style="ellipse;shape=doubleEllipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
                     <mxGeometry x="370" y="70" width="100" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="ty_xhHiwv_qMUtKukG_b-6" value="" style="edgeStyle=none;html=1;" edge="1" parent="1" source="ty_xhHiwv_qMUtKukG_b-2" target="ty_xhHiwv_qMUtKukG_b-5">
+                <mxCell id="ty_xhHiwv_qMUtKukG_b-6" value="" style="edgeStyle=none;html=1;" parent="1" source="ty_xhHiwv_qMUtKukG_b-2" target="ty_xhHiwv_qMUtKukG_b-5" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="ty_xhHiwv_qMUtKukG_b-2" value="load manifest.yaml" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;" vertex="1" parent="1">
+                <mxCell id="ty_xhHiwv_qMUtKukG_b-2" value="load manifest.yaml" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;" parent="1" vertex="1">
                     <mxGeometry x="340" y="210" width="160" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="ty_xhHiwv_qMUtKukG_b-4" value="&lt;h1&gt;manifest.yml&lt;/h1&gt;&lt;p&gt;spec:&lt;/p&gt;&lt;p&gt;&amp;nbsp; runtimes:&lt;/p&gt;&lt;p&gt;&amp;nbsp; &amp;nbsp; - language: python&lt;/p&gt;&lt;p&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; image: python:3-alpine3.17&lt;/p&gt;&lt;p&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; instances: 5&lt;/p&gt;&lt;p&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; aliases:&lt;/p&gt;&lt;p&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; - python&lt;/p&gt;&lt;p&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; - py&lt;/p&gt;&lt;p&gt;&amp;nbsp; &amp;nbsp; - language: node&lt;/p&gt;&lt;p&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; image: node:18-alpine3.17&lt;/p&gt;&lt;p&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; instances: 5&lt;/p&gt;&lt;p&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; aliases:&lt;/p&gt;&lt;p&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; - nodejs&lt;/p&gt;&lt;p&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; - javascript&lt;/p&gt;&lt;p&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; - js&lt;/p&gt;" style="text;html=1;strokeColor=none;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;" vertex="1" parent="1">
+                <mxCell id="ty_xhHiwv_qMUtKukG_b-4" value="&lt;h1&gt;manifest.yml&lt;/h1&gt;&lt;p&gt;spec:&lt;/p&gt;&lt;p&gt;&amp;nbsp; runtimes:&lt;/p&gt;&lt;p&gt;&amp;nbsp; &amp;nbsp; - language: python&lt;/p&gt;&lt;p&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; image: python:3-alpine3.17&lt;/p&gt;&lt;p&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; instances: 5&lt;/p&gt;&lt;p&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; aliases:&lt;/p&gt;&lt;p&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; - python&lt;/p&gt;&lt;p&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; - py&lt;/p&gt;&lt;p&gt;&amp;nbsp; &amp;nbsp; - language: node&lt;/p&gt;&lt;p&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; image: node:18-alpine3.17&lt;/p&gt;&lt;p&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; instances: 5&lt;/p&gt;&lt;p&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; aliases:&lt;/p&gt;&lt;p&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; - nodejs&lt;/p&gt;&lt;p&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; - javascript&lt;/p&gt;&lt;p&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp; &amp;nbsp; - js&lt;/p&gt;" style="text;html=1;strokeColor=none;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;" parent="1" vertex="1">
                     <mxGeometry x="870" y="115" width="190" height="470" as="geometry"/>
                 </mxCell>
-                <mxCell id="ty_xhHiwv_qMUtKukG_b-8" value="" style="edgeStyle=none;html=1;" edge="1" parent="1" source="ty_xhHiwv_qMUtKukG_b-5" target="ty_xhHiwv_qMUtKukG_b-7">
+                <mxCell id="ty_xhHiwv_qMUtKukG_b-8" value="" style="edgeStyle=none;html=1;" parent="1" source="ty_xhHiwv_qMUtKukG_b-5" target="ty_xhHiwv_qMUtKukG_b-7" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="ty_xhHiwv_qMUtKukG_b-5" value="Get runtime information. Eg, python" style="whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                <mxCell id="ty_xhHiwv_qMUtKukG_b-5" value="Get runtime information. Eg, python" style="whiteSpace=wrap;html=1;" parent="1" vertex="1">
                     <mxGeometry x="360" y="350" width="120" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="ty_xhHiwv_qMUtKukG_b-10" value="" style="edgeStyle=none;html=1;" edge="1" parent="1" source="ty_xhHiwv_qMUtKukG_b-7" target="ty_xhHiwv_qMUtKukG_b-9">
+                <mxCell id="ty_xhHiwv_qMUtKukG_b-10" value="" style="edgeStyle=none;html=1;" parent="1" source="ty_xhHiwv_qMUtKukG_b-7" target="ty_xhHiwv_qMUtKukG_b-9" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="ty_xhHiwv_qMUtKukG_b-7" value="Check the number of instances currently running" style="whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                <mxCell id="ty_xhHiwv_qMUtKukG_b-7" value="Check the number of instances currently running" style="whiteSpace=wrap;html=1;" parent="1" vertex="1">
                     <mxGeometry x="360" y="490" width="120" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="ty_xhHiwv_qMUtKukG_b-12" value="yes" style="edgeStyle=none;html=1;" edge="1" parent="1" source="ty_xhHiwv_qMUtKukG_b-9" target="ty_xhHiwv_qMUtKukG_b-11">
+                <mxCell id="ty_xhHiwv_qMUtKukG_b-12" value="yes" style="edgeStyle=none;html=1;" parent="1" source="ty_xhHiwv_qMUtKukG_b-9" target="ty_xhHiwv_qMUtKukG_b-11" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="ty_xhHiwv_qMUtKukG_b-16" value="No" style="edgeStyle=none;html=1;" edge="1" parent="1" source="ty_xhHiwv_qMUtKukG_b-9" target="ty_xhHiwv_qMUtKukG_b-15">
+                <mxCell id="ty_xhHiwv_qMUtKukG_b-16" value="No" style="edgeStyle=none;html=1;" parent="1" source="ty_xhHiwv_qMUtKukG_b-9" target="ty_xhHiwv_qMUtKukG_b-15" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="ty_xhHiwv_qMUtKukG_b-9" value="Is the number of instances &lt;br&gt;running &amp;gt; number specified in manifest?" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                <mxCell id="ty_xhHiwv_qMUtKukG_b-9" value="Is the number of instances &lt;br&gt;running &amp;gt; number specified in manifest?" style="rhombus;whiteSpace=wrap;html=1;" parent="1" vertex="1">
                     <mxGeometry x="355" y="610" width="135" height="140" as="geometry"/>
                 </mxCell>
-                <mxCell id="ty_xhHiwv_qMUtKukG_b-20" value="" style="edgeStyle=none;html=1;" edge="1" parent="1" source="ty_xhHiwv_qMUtKukG_b-11" target="ty_xhHiwv_qMUtKukG_b-19">
+                <mxCell id="ty_xhHiwv_qMUtKukG_b-20" value="" style="edgeStyle=none;html=1;" parent="1" source="ty_xhHiwv_qMUtKukG_b-11" target="ty_xhHiwv_qMUtKukG_b-19" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="ty_xhHiwv_qMUtKukG_b-11" value="Kill excess instances" style="whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                <mxCell id="ty_xhHiwv_qMUtKukG_b-11" value="Kill excess instances" style="whiteSpace=wrap;html=1;" parent="1" vertex="1">
                     <mxGeometry x="362.5" y="820" width="120" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="ty_xhHiwv_qMUtKukG_b-18" value="yes" style="edgeStyle=none;html=1;" edge="1" parent="1" source="ty_xhHiwv_qMUtKukG_b-15" target="ty_xhHiwv_qMUtKukG_b-17">
+                <mxCell id="ty_xhHiwv_qMUtKukG_b-18" value="yes" style="edgeStyle=none;html=1;" parent="1" source="ty_xhHiwv_qMUtKukG_b-15" target="ty_xhHiwv_qMUtKukG_b-17" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="ty_xhHiwv_qMUtKukG_b-15" value="Is the number of instances running &amp;lt; number specified in manifest?" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                <mxCell id="ty_xhHiwv_qMUtKukG_b-15" value="Is the number of instances running &amp;lt; number specified in manifest?" style="rhombus;whiteSpace=wrap;html=1;" parent="1" vertex="1">
                     <mxGeometry x="90" y="610" width="170" height="140" as="geometry"/>
                 </mxCell>
-                <mxCell id="ty_xhHiwv_qMUtKukG_b-21" style="edgeStyle=none;html=1;" edge="1" parent="1" source="ty_xhHiwv_qMUtKukG_b-17">
+                <mxCell id="ty_xhHiwv_qMUtKukG_b-21" style="edgeStyle=none;html=1;" parent="1" source="ty_xhHiwv_qMUtKukG_b-17" edge="1">
                     <mxGeometry relative="1" as="geometry">
                         <mxPoint x="423" y="937.1428571428571" as="targetPoint"/>
                         <Array as="points">
@@ -92,10 +92,10 @@
                         </Array>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="ty_xhHiwv_qMUtKukG_b-17" value="Add more instances" style="whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                <mxCell id="ty_xhHiwv_qMUtKukG_b-17" value="Add more instances" style="whiteSpace=wrap;html=1;" parent="1" vertex="1">
                     <mxGeometry x="115" y="810" width="120" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="ty_xhHiwv_qMUtKukG_b-23" style="edgeStyle=none;html=1;" edge="1" parent="1" source="ty_xhHiwv_qMUtKukG_b-19">
+                <mxCell id="ty_xhHiwv_qMUtKukG_b-23" style="edgeStyle=none;html=1;" parent="1" source="ty_xhHiwv_qMUtKukG_b-19" edge="1">
                     <mxGeometry relative="1" as="geometry">
                         <mxPoint x="420" y="160" as="targetPoint"/>
                         <Array as="points">
@@ -104,10 +104,10 @@
                         </Array>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="ty_xhHiwv_qMUtKukG_b-19" value="Pause for 3 minutes" style="shape=ellipse;html=1;dashed=0;whitespace=wrap;aspect=fixed;strokeWidth=5;perimeter=ellipsePerimeter;" vertex="1" parent="1">
+                <mxCell id="ty_xhHiwv_qMUtKukG_b-19" value="Pause for 3 minutes" style="shape=ellipse;html=1;dashed=0;whitespace=wrap;aspect=fixed;strokeWidth=5;perimeter=ellipsePerimeter;" parent="1" vertex="1">
                     <mxGeometry x="372.5" y="980" width="100" height="100" as="geometry"/>
                 </mxCell>
-                <mxCell id="ty_xhHiwv_qMUtKukG_b-22" value="While there are more runtimes" style="edgeStyle=segmentEdgeStyle;endArrow=classic;html=1;curved=0;rounded=0;endSize=8;startSize=8;" edge="1" parent="1">
+                <mxCell id="ty_xhHiwv_qMUtKukG_b-22" value="While there are more runtimes" style="edgeStyle=segmentEdgeStyle;endArrow=classic;html=1;curved=0;rounded=0;endSize=8;startSize=8;" parent="1" edge="1">
                     <mxGeometry width="50" height="50" relative="1" as="geometry">
                         <mxPoint x="420" y="930" as="sourcePoint"/>
                         <mxPoint x="420" y="300" as="targetPoint"/>

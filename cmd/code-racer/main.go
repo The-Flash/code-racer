@@ -2,11 +2,12 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"log"
 	"os"
 
+	"github.com/The-Flash/code-racer/internal/container_manager"
 	"github.com/The-Flash/code-racer/internal/manifest"
+	"github.com/docker/docker/client"
 )
 
 var (
@@ -22,7 +23,17 @@ func main() {
 
 	m := new(manifest.Manifest)
 	m.Load(manifestFile)
+	cli, err := client.NewClientWithOpts(client.FromEnv)
+	if err != nil {
+		log.Fatal("could not connect to docker ", err)
+	}
+	defer cli.Close()
+	for _, runtime := range m.Runtimes {
+		runningInstances := container_manager.CheckNumberOfActiveContainersForRuntime(cli, &runtime)
+		if runningInstances < runtime.Instances {
+			// spin up containers
+			container_manager.SpinUpContainers(cli, &runtime)
+		}
 
-	fmt.Println(m.Runtimes)
-
+	}
 }
