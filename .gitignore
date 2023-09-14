@@ -1,1 +1,3 @@
 .env
+mntfs/*
+!mntfs/.gitkeep

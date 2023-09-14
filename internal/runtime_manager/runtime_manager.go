@@ -10,12 +10,17 @@ import (
 	"github.com/The-Flash/code-racer/internal/manifest"
 	"github.com/docker/docker/api/types"
 	containerTypes "github.com/docker/docker/api/types/container"
+	"github.com/docker/docker/api/types/mount"
 	"github.com/docker/docker/client"
 )
 
 var (
 	ctx = context.Background()
 )
+
+type RuntimeConfig struct {
+	MountSource string
+}
 
 func CheckNumberOfActiveContainersForRuntime(cli *client.Client, r *manifest.ManifestRuntime) (int, error) {
 	containers, err := cli.ContainerList(ctx, types.ContainerListOptions{})
@@ -50,7 +55,7 @@ func getContainersForRuntime(cli *client.Client, r *manifest.ManifestRuntime) ([
 	return c, nil
 }
 
-func ScaleUpRuntime(cli *client.Client, r *manifest.ManifestRuntime) error {
+func ScaleUpRuntime(cli *client.Client, r *manifest.ManifestRuntime, config *RuntimeConfig) error {
 	// spin up containers
 	preferredNumberOfInstances := r.Instances
 	numberOfActiveContainers, err := CheckNumberOfActiveContainersForRuntime(cli, r)
@@ -74,8 +79,17 @@ func ScaleUpRuntime(cli *client.Client, r *manifest.ManifestRuntime) error {
 		resp, err := cli.ContainerCreate(ctx, &containerTypes.Config{
 			Image: r.Image,
 			Tty:   true,
-		}, nil, nil, nil, "")
+		}, &containerTypes.HostConfig{
+			Mounts: []mount.Mount{
+				{
+					Type:   mount.TypeBind,
+					Source: config.MountSource, // TODO: add source
+					Target: "/cr",              // TODO: add target
+				},
+			},
+		}, nil, nil, "")
 		if err != nil {
+			fmt.Println(err)
 			return err
 		}
 		if err := cli.ContainerStart(ctx, resp.ID, types.ContainerStartOptions{}); err != nil {
@@ -110,7 +124,12 @@ func ScaleDownRuntime(cli *client.Client, r *manifest.ManifestRuntime) error {
 			Timeout: &noWaitTimeout,
 		})
 		if err != nil {
-			fmt.Println(err)
+			return err
+		}
+
+		err = cli.ContainerRemove(ctx, container.ID, types.ContainerRemoveOptions{})
+		if err != nil {
+			return err
 		}
 		fmt.Println("Removing container", container.ID)
 	}

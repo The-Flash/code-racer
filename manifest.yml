@@ -2,13 +2,13 @@ periodMinutes: 1
 runtimes:
   - language: python
     image: python:3-alpine3.17
-    instances: 2
+    instances: 0
     aliases:
       - python
       - py
   - language: node
     image: node:18-alpine3.17
-    instances: 2
+    instances: 0
     aliases:
       - nodejs
       - javascript

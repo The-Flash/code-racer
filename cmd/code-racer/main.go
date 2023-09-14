@@ -13,7 +13,8 @@ import (
 )
 
 var (
-	manifestPtr = flag.String("f", "", "Path to manifest file")
+	manifestPtr   = flag.String("f", "", "Path to manifest file")
+	mountPointPtr = flag.String("m", "", "Path to mount point")
 )
 
 func main() {
@@ -44,10 +45,18 @@ func main() {
 			if runningInstances < runtime.Instances {
 				fmt.Println("too few instances running")
 				// spin up containers
-				runtime_manager.ScaleUpRuntime(cli, &runtime)
+				err := runtime_manager.ScaleUpRuntime(cli, &runtime, &runtime_manager.RuntimeConfig{
+					MountSource: *mountPointPtr,
+				})
+				if err != nil {
+					fmt.Println("could not scale up runtime", err)
+				}
 			} else if runningInstances > runtime.Instances {
 				fmt.Println("too many instances running")
-				runtime_manager.ScaleDownRuntime(cli, &runtime)
+				err := runtime_manager.ScaleDownRuntime(cli, &runtime)
+				if err != nil {
+					fmt.Println("could not scale up runtime", err)
+				}
 			}
 		}
 		time.Sleep(time.Minute * time.Duration(m.PeriodMinutes))
