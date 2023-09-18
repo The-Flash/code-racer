@@ -19,8 +19,9 @@ import (
 )
 
 type RuntimeManager struct {
-	cli *client.Client
-	ctx context.Context
+	cli   *client.Client
+	ctx   context.Context
+	mfest *manifest.Manifest
 }
 
 type RuntimeConfig struct {
@@ -31,6 +32,7 @@ func (r *RuntimeManager) Setup(ctn di.Container) error {
 	cli := ctn.Get(names.DiDockerClientProvider).(*client.Client)
 	r.cli = cli
 	r.ctx = context.Background()
+	r.mfest = ctn.Get(names.DiManifestProvider).(*manifest.Manifest)
 	return nil
 }
 
@@ -156,16 +158,11 @@ func (r *RuntimeManager) scaleDownRuntime(rt *manifest.ManifestRuntime) error {
 
 func (r *RuntimeManager) Run(manifestPath string, mountPointPath string) {
 	for {
-		manifestFile, err := os.ReadFile(manifestPath)
-		if err != nil {
-			log.Fatal("could not read manifest file", err)
-		}
-		m := new(manifest.Manifest)
-		err = m.Load(manifestFile)
+		err := r.mfest.Load(manifestPath)
 		if err != nil {
 			log.Fatal("could not load manifest", err)
 		}
-		for _, runtime := range m.Runtimes {
+		for _, runtime := range r.mfest.Runtimes {
 			runningInstances, err := r.checkNumberOfActiveContainersForRuntime(&runtime)
 			if err != nil {
 				log.Fatal("could not check number of running instances", err)
@@ -187,6 +184,6 @@ func (r *RuntimeManager) Run(manifestPath string, mountPointPath string) {
 				}
 			}
 		}
-		time.Sleep(time.Minute * time.Duration(m.PeriodMinutes))
+		time.Sleep(time.Minute * time.Duration(r.mfest.PeriodMinutes))
 	}
 }

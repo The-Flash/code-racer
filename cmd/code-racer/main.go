@@ -8,6 +8,7 @@ import (
 	"syscall"
 
 	"github.com/The-Flash/code-racer/internal/api"
+	"github.com/The-Flash/code-racer/internal/manifest"
 	"github.com/The-Flash/code-racer/internal/names"
 	"github.com/The-Flash/code-racer/internal/runtime_manager"
 	"github.com/docker/docker/client"
@@ -63,6 +64,17 @@ func main() {
 		Build: func(ctn di.Container) (v interface{}, err error) {
 			v = new(runtime_manager.RuntimeManager)
 			v.(*runtime_manager.RuntimeManager).Setup(ctn)
+			return
+		},
+	})
+
+	// di for manifest
+	diBuilder.Add(di.Def{
+		Name: names.DiManifestProvider,
+		Build: func(ctn di.Container) (m interface{}, err error) {
+			m = new(manifest.Manifest)
+			obj := m.(*manifest.Manifest)
+			err = obj.Load(*manifestPtr)
 			return
 		},
 	})

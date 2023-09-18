@@ -1,6 +1,9 @@
 package manifest
 
 import (
+	"log"
+	"os"
+
 	"gopkg.in/yaml.v3"
 )
 
@@ -24,7 +27,11 @@ type ManifestRuntime struct {
 	SchedulingAlgorithm SchedulingAlgorithm `yaml:"schedulingAlgorithm" default:"random"`
 }
 
-func (m *Manifest) Load(f []byte) error {
-	err := yaml.Unmarshal(f, &m)
+func (m *Manifest) Load(manifestPath string) error {
+	manifestData, err := os.ReadFile(manifestPath)
+	if err != nil {
+		log.Fatal("could not read manifest file", err)
+	}
+	err = yaml.Unmarshal(manifestData, &m)
 	return err
 }

@@ -4,4 +4,5 @@ const (
 	DiDockerClientProvider   = "dockerClientProvider"
 	DiAPIProvider            = "apiProvider"
 	DiRuntimeManagerProvider = "runtimeManagerProvider"
+	DiManifestProvider       = "manifestProvider"
 )
