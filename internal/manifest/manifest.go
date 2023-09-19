@@ -40,11 +40,23 @@ func (m *Manifest) GetRuntimes() []ManifestRuntime {
 	return m.Runtimes
 }
 
+func (m *Manifest) setDefaults() {
+	var runtimes []ManifestRuntime = []ManifestRuntime{}
+	for _, r := range m.Runtimes {
+		if r.SchedulingAlgorithm == "" {
+			r.SchedulingAlgorithm = Random
+			runtimes = append(runtimes, r)
+		}
+	}
+	copy(m.Runtimes, runtimes)
+}
+
 func (m *Manifest) Load(manifestPath string) error {
 	manifestData, err := os.ReadFile(manifestPath)
 	if err != nil {
 		log.Fatal("could not read manifest file", err)
 	}
 	err = yaml.Unmarshal(manifestData, &m)
+	m.setDefaults()
 	return err
 }
