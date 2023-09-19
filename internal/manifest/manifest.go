@@ -15,16 +15,29 @@ const (
 )
 
 type Manifest struct {
-	Runtimes      []ManifestRuntime `yaml:"runtimes"`
-	PeriodMinutes int               `yaml:"periodMinutes"`
+	Runtimes      []ManifestRuntime `yaml:"runtimes" json:"runtimes"`
+	PeriodMinutes int               `yaml:"periodMinutes" json:"periodMinutes"`
 }
 
 type ManifestRuntime struct {
-	Language            string              `yaml:"language"`
-	Image               string              `yaml:"image"`
-	Instances           int                 `yaml:"instances"`
-	Aliases             []string            `yaml:"aliases"`
-	SchedulingAlgorithm SchedulingAlgorithm `yaml:"schedulingAlgorithm" default:"random"`
+	Language            string              `yaml:"language" json:"language"`
+	Image               string              `yaml:"image" json:"image"`
+	Instances           int                 `yaml:"instances" json:"instances"`
+	Aliases             []string            `yaml:"aliases" json:"aliases"`
+	SchedulingAlgorithm SchedulingAlgorithm `yaml:"schedulingAlgorithm" json:"schedulingAlgorithm"`
+}
+
+func (m *Manifest) getRuntime(language string) (*ManifestRuntime, bool) {
+	for _, r := range m.Runtimes {
+		if r.Language == language {
+			return &r, true
+		}
+	}
+	return &ManifestRuntime{}, false
+}
+
+func (m *Manifest) GetRuntimes() []ManifestRuntime {
+	return m.Runtimes
 }
 
 func (m *Manifest) Load(manifestPath string) error {

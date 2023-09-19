@@ -29,7 +29,7 @@ func NewAPI(ctn di.Container) (r *API, err error) {
 		ServerHeader: "code-racer",
 	})
 
-	new(v1.Router).Setup(r.app.Group("/api/v1"))
+	new(v1.Router).Setup(r.app.Group("/api/v1"), ctn)
 	return
 }
 
