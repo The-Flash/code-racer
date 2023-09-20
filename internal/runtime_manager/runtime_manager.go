@@ -9,6 +9,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/The-Flash/code-racer/internal/config"
 	"github.com/The-Flash/code-racer/internal/manifest"
 	"github.com/The-Flash/code-racer/internal/names"
 	"github.com/docker/docker/api/types"
@@ -19,9 +20,10 @@ import (
 )
 
 type RuntimeManager struct {
-	cli   *client.Client
-	ctx   context.Context
-	mfest *manifest.Manifest
+	config *config.Config
+	cli    *client.Client
+	ctx    context.Context
+	mfest  *manifest.Manifest
 }
 
 type RuntimeConfig struct {
@@ -33,6 +35,7 @@ func (r *RuntimeManager) Setup(ctn di.Container) error {
 	r.cli = cli
 	r.ctx = context.Background()
 	r.mfest = ctn.Get(names.DiManifestProvider).(*manifest.Manifest)
+	r.config = ctn.Get(names.DiConfigProvider).(*config.Config)
 	return nil
 }
 
@@ -114,7 +117,7 @@ func (r *RuntimeManager) scaleUpRuntime(rt *manifest.ManifestRuntime, config *Ru
 			return err
 		}
 	}
-	fmt.Printf("Spinned up %d %s containers\n", numberOfContainersToSpinup, rt.Language)
+	fmt.Printf("Spinned up %d %s container(s)\n", numberOfContainersToSpinup, rt.Language)
 	return nil
 }
 
@@ -136,7 +139,7 @@ func (r *RuntimeManager) scaleDownRuntime(rt *manifest.ManifestRuntime) error {
 		return err
 	}
 	containersToRemove := runningContainers[0:excessContainers]
-	fmt.Println("Removing containers for", rt.Language)
+	fmt.Println("Removing container(s) for", rt.Language)
 	noWaitTimeout := 0
 	for _, container := range containersToRemove {
 		err := cli.ContainerStop(r.ctx, container.ID, containerTypes.StopOptions{
@@ -152,13 +155,13 @@ func (r *RuntimeManager) scaleDownRuntime(rt *manifest.ManifestRuntime) error {
 		}
 		fmt.Println("Removing container", container.ID)
 	}
-	fmt.Printf("Removed %d %s containers\n", excessContainers, rt.Language)
+	fmt.Printf("Removed %d %s container(s)\n", excessContainers, rt.Language)
 	return nil
 }
 
-func (r *RuntimeManager) Run(manifestPath string, mountPointPath string) {
+func (r *RuntimeManager) Run() {
 	for {
-		err := r.mfest.Load(manifestPath)
+		err := r.mfest.Load(r.config.ManifestPath)
 		if err != nil {
 			log.Fatal("could not load manifest", err)
 		}
@@ -171,7 +174,7 @@ func (r *RuntimeManager) Run(manifestPath string, mountPointPath string) {
 				fmt.Println("too few instances running")
 				// spin up containers
 				err := r.scaleUpRuntime(&runtime, &RuntimeConfig{
-					MountSource: mountPointPath,
+					MountSource: r.config.MountSourcePath,
 				})
 				if err != nil {
 					fmt.Println("could not scale up runtime", err)

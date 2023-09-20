@@ -5,4 +5,5 @@ const (
 	DiAPIProvider            = "apiProvider"
 	DiRuntimeManagerProvider = "runtimeManagerProvider"
 	DiManifestProvider       = "manifestProvider"
+	DiConfigProvider         = "configProvider"
 )

@@ -3,6 +3,8 @@ package v1
 import (
 	"github.com/The-Flash/code-racer/internal/manifest"
 	"github.com/The-Flash/code-racer/internal/names"
+	"github.com/The-Flash/code-racer/pkg/models"
+	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 	"github.com/sarulabs/di/v2"
 )
@@ -30,5 +32,14 @@ func (r *Router) runtimes(ctx *fiber.Ctx) error {
 }
 
 func (r *Router) execute(ctx *fiber.Ctx) error {
-	return nil
+	validate := validator.New()
+	body := new(models.ExecutionRequest)
+	if err := ctx.BodyParser(body); err != nil {
+		return err
+	}
+
+	if err := validate.Struct(body); err != nil {
+		return err
+	}
+	return ctx.JSON(body)
 }

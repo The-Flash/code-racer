@@ -8,6 +8,7 @@ import (
 	"syscall"
 
 	"github.com/The-Flash/code-racer/internal/api"
+	"github.com/The-Flash/code-racer/internal/config"
 	"github.com/The-Flash/code-racer/internal/manifest"
 	"github.com/The-Flash/code-racer/internal/names"
 	"github.com/The-Flash/code-racer/internal/runtime_manager"
@@ -79,13 +80,26 @@ func main() {
 		},
 	})
 
+	// di for config
+	diBuilder.Add(di.Def{
+		Name: names.DiConfigProvider,
+		Build: func(ctn di.Container) (interface{}, error) {
+			c := config.NewConfig(
+				*manifestPtr,
+				*mountPointPtr,
+				"/code-racer",
+			)
+			return c, nil
+		},
+	})
+
 	ctn := diBuilder.Build()
 
 	api := ctn.Get(names.DiAPIProvider).(*api.API)
 
 	rtm := ctn.Get(names.DiRuntimeManagerProvider).(*runtime_manager.RuntimeManager)
 
-	go rtm.Run(*manifestPtr, *mountPointPtr)
+	go rtm.Run()
 
 	go api.ListenAndServeBlocking()
 

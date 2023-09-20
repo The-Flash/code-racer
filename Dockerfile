@@ -3,6 +3,7 @@ WORKDIR /build
 
 COPY cmd/ cmd/
 COPY internal/ internal/
+COPY pkg/ pkg/
 COPY Makefile Makefile
 COPY go.mod go.mod
 COPY go.sum go.sum
