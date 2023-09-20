@@ -12,31 +12,3 @@ type ExecutionFile struct {
 	Name    string `json:"name" validate:"required"`
 	Content string `json:"content" validate:"required"`
 }
-
-// {
-
-//     "language": "python",
-
-//     "entrypoint": "main.py",
-
-//     "files": [
-
-//         {
-
-//             "name": "main.py",
-
-//             "content": "print('hello world')"
-
-//         },
-
-//         {
-
-//             "name": "__init__.py",
-
-//             "content": ""
-
-//         }
-
-//     ]
-
-// }
