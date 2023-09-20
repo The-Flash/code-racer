@@ -18,8 +18,9 @@ import (
 )
 
 var (
-	manifestPtr   = flag.String("f", "", "Path to manifest file")
-	mountPointPtr = flag.String("m", "", "Path to mount point")
+	manifestPtr    = flag.String("f", "", "Path to manifest file")
+	mountPointPtr  = flag.String("m", "", "Path to mount point")
+	runnersPathPtr = flag.String("r", "", "Path to runners directory")
 )
 
 func main() {
@@ -86,9 +87,13 @@ func main() {
 		Build: func(ctn di.Container) (interface{}, error) {
 			c := config.NewConfig(
 				*manifestPtr,
-				*mountPointPtr,
-				"/code-racer",
 			)
+			c.ManifestPath = *manifestPtr
+			c.FsMount.MountSourcePath = *mountPointPtr
+			c.FsMount.MountTargetPath = "/code-racer"
+
+			c.RunnersMount.MountSourcePath = *runnersPathPtr
+			c.RunnersMount.MountTargetPath = "/runners"
 			return c, nil
 		},
 	})

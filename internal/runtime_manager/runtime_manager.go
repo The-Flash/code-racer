@@ -3,7 +3,6 @@ package runtime_manager
 
 import (
 	"context"
-	"fmt"
 	"io"
 	"log"
 	"os"
@@ -74,7 +73,7 @@ func (r *RuntimeManager) getContainersForRuntime(rt *manifest.ManifestRuntime) (
 	return c, nil
 }
 
-func (r *RuntimeManager) scaleUpRuntime(rt *manifest.ManifestRuntime, config *RuntimeConfig) error {
+func (r *RuntimeManager) scaleUpRuntime(rt *manifest.ManifestRuntime) error {
 
 	cli := r.cli
 	// spin up containers
@@ -88,7 +87,10 @@ func (r *RuntimeManager) scaleUpRuntime(rt *manifest.ManifestRuntime, config *Ru
 		return nil
 	}
 	numberOfContainersToSpinup := preferredNumberOfInstances - numberOfActiveContainers
-	fmt.Println("Spinning up containers for", rt.Language)
+	log.Println("Spinning up containers for", rt.Language)
+	go func() {
+
+	}()
 	for i := 0; i < numberOfContainersToSpinup; i++ {
 		// pull image
 		reader, err := cli.ImagePull(r.ctx, rt.Image, types.ImagePullOptions{})
@@ -104,20 +106,25 @@ func (r *RuntimeManager) scaleUpRuntime(rt *manifest.ManifestRuntime, config *Ru
 			Mounts: []mount.Mount{
 				{
 					Type:   mount.TypeBind,
-					Source: config.MountSource,
-					Target: "/code-racer",
+					Source: r.config.FsMount.MountSourcePath,
+					Target: r.config.FsMount.MountTargetPath,
+				},
+				{
+					Type:   mount.TypeBind,
+					Source: r.config.RunnersMount.MountSourcePath,
+					Target: r.config.RunnersMount.MountTargetPath,
 				},
 			},
 		}, nil, nil, "")
 		if err != nil {
-			fmt.Println(err)
+			log.Println(err)
 			return err
 		}
 		if err := cli.ContainerStart(r.ctx, resp.ID, types.ContainerStartOptions{}); err != nil {
 			return err
 		}
 	}
-	fmt.Printf("Spinned up %d %s container(s)\n", numberOfContainersToSpinup, rt.Language)
+	log.Printf("Spinned up %d %s container(s)\n", numberOfContainersToSpinup, rt.Language)
 	return nil
 }
 
@@ -139,23 +146,26 @@ func (r *RuntimeManager) scaleDownRuntime(rt *manifest.ManifestRuntime) error {
 		return err
 	}
 	containersToRemove := runningContainers[0:excessContainers]
-	fmt.Println("Removing container(s) for", rt.Language)
+	log.Println("Removing container(s) for", rt.Language)
 	noWaitTimeout := 0
 	for _, container := range containersToRemove {
 		err := cli.ContainerStop(r.ctx, container.ID, containerTypes.StopOptions{
 			Timeout: &noWaitTimeout,
 		})
 		if err != nil {
+			log.Println(err)
 			return err
 		}
 
 		err = cli.ContainerRemove(r.ctx, container.ID, types.ContainerRemoveOptions{})
 		if err != nil {
+			log.Println(err)
 			return err
 		}
-		fmt.Println("Removing container", container.ID)
+		log.Println("Removing container", container.ID)
+
 	}
-	fmt.Printf("Removed %d %s container(s)\n", excessContainers, rt.Language)
+	log.Printf("Removed %d %s container(s)\n", excessContainers, rt.Language)
 	return nil
 }
 
@@ -171,19 +181,17 @@ func (r *RuntimeManager) Run() {
 				log.Fatal("could not check number of running instances", err)
 			}
 			if runningInstances < runtime.Instances {
-				fmt.Println("too few instances running")
+				log.Println("too few instances running")
 				// spin up containers
-				err := r.scaleUpRuntime(&runtime, &RuntimeConfig{
-					MountSource: r.config.MountSourcePath,
-				})
+				err := r.scaleUpRuntime(&runtime)
 				if err != nil {
-					fmt.Println("could not scale up runtime", err)
+					log.Println("could not scale up runtime", err)
 				}
 			} else if runningInstances > runtime.Instances {
-				fmt.Println("too many instances running")
+				log.Println("too many instances running")
 				err := r.scaleDownRuntime(&runtime)
 				if err != nil {
-					fmt.Println("could not scale up runtime", err)
+					log.Println("could not scale up runtime", err)
 				}
 			}
 		}

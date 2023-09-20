@@ -7,3 +7,11 @@ A Remote Code Execution Engine
 ```sh
 make dev
 ```
+
+## Running in Development
+
+This project uses air for auto reloading
+
+```
+air
+```

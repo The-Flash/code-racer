@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e">
     <diagram id="xYpieU3OsDlBosfl1Ia8" name="Page-1">
-        <mxGraphModel dx="2217" dy="797" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+        <mxGraphModel dx="1660" dy="449" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -121,7 +121,7 @@
         </mxGraphModel>
     </diagram>
     <diagram id="G5SbLVb5rS5KRPmOLXK9" name="Code Execution">
-        <mxGraphModel dx="606" dy="217" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+        <mxGraphModel dx="590" dy="449" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -130,6 +130,36 @@
                 </mxCell>
                 <mxCell id="VDtfk-eA55_RWqB2SgVV-1" value="&lt;h1&gt;Algorithm&lt;/h1&gt;&lt;p&gt;1. User makes a request to the server with the request body&lt;/p&gt;&lt;p&gt;2. Validate user input&lt;/p&gt;&lt;p&gt;&amp;nbsp; &amp;nbsp; a. request must have the name of the language, entrypoint and files&lt;/p&gt;&lt;p&gt;&amp;nbsp; &amp;nbsp; b. the file must not start with &quot;.&quot;&lt;/p&gt;&lt;p&gt;&amp;nbsp; &amp;nbsp; c. the entry point must be in the files&lt;/p&gt;&lt;p&gt;&amp;nbsp; &amp;nbsp; d. the entire file sent must be a maximum of 10mb&lt;/p&gt;&lt;p&gt;3. Get the runtime specified for that language&lt;/p&gt;&lt;p&gt;4. Get the available instances for that runtime&lt;/p&gt;&lt;p&gt;5. if the scheduling algorithm is &quot;random&quot;&lt;/p&gt;&lt;p&gt;&amp;nbsp; &amp;nbsp; a. at random, pick any instance for said runtime.&lt;/p&gt;&lt;p&gt;&amp;nbsp; &amp;nbsp; b. create a unique id for code execution&lt;/p&gt;&lt;p&gt;&amp;nbsp; &amp;nbsp; c. create all the files/folders from the request into [mounted-folder]/[id]&lt;/p&gt;&lt;p&gt;&amp;nbsp; &amp;nbsp; d. execute the code&lt;/p&gt;&lt;p&gt;6. if the scheduling algorithm is &quot;round robin&quot;:&lt;/p&gt;&lt;p&gt;&amp;nbsp; &amp;nbsp; Haven't figuired out that yet :)&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;" style="text;html=1;strokeColor=none;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;" parent="1" vertex="1">
                     <mxGeometry x="360" y="20" width="330" height="480" as="geometry"/>
+                </mxCell>
+                <mxCell id="hICBj92820vfxaeRLd9u-1" value="" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="80" y="530" width="290" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="hICBj92820vfxaeRLd9u-2" value="Code execution for python" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="145" y="550" width="160" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="hICBj92820vfxaeRLd9u-3" value="files" style="ellipse;whiteSpace=wrap;html=1;aspect=fixed;" parent="1" vertex="1">
+                    <mxGeometry x="130" y="640" width="80" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="hICBj92820vfxaeRLd9u-4" value="python [entrypoint]" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="260" y="665" width="140" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="hICBj92820vfxaeRLd9u-5" value="node [entrypoint]" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="260" y="700" width="130" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="hICBj92820vfxaeRLd9u-7" value="&lt;h1&gt;Directory Structure&lt;/h1&gt;&lt;p&gt;c146affa-c760-46ad-b331-257e99f1c6ef&lt;/p&gt;&lt;p&gt;&amp;nbsp; - settings&lt;/p&gt;&lt;p&gt;&amp;nbsp; &amp;nbsp; &amp;nbsp;- __init__.py&lt;/p&gt;&lt;p&gt;&amp;nbsp; - main.py&lt;/p&gt;&lt;p&gt;&amp;nbsp; - __init__.py&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;" style="text;html=1;strokeColor=none;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="80" y="770" width="300" height="190" as="geometry"/>
+                </mxCell>
+                <mxCell id="hICBj92820vfxaeRLd9u-10" value="" style="endArrow=classic;html=1;entryX=0.733;entryY=0.316;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" target="hICBj92820vfxaeRLd9u-7" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="500" y="830" as="sourcePoint"/>
+                        <mxPoint x="520" y="830" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="hICBj92820vfxaeRLd9u-11" value="execution id" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="510" y="810" width="90" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="hICBj92820vfxaeRLd9u-12" value="&lt;h1&gt;run script template&lt;/h1&gt;&lt;p&gt;cd [execution id]&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;" style="text;html=1;strokeColor=none;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;" parent="1" vertex="1">
+                    <mxGeometry x="410" y="880" width="270" height="120" as="geometry"/>
                 </mxCell>
             </root>
         </mxGraphModel>

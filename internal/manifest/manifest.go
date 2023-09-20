@@ -23,7 +23,6 @@ type ManifestRuntime struct {
 	Language            string              `yaml:"language" json:"language"`
 	Image               string              `yaml:"image" json:"image"`
 	Instances           int                 `yaml:"instances" json:"instances"`
-	Aliases             []string            `yaml:"aliases" json:"aliases"`
 	SchedulingAlgorithm SchedulingAlgorithm `yaml:"schedulingAlgorithm" json:"schedulingAlgorithm"`
 }
 
