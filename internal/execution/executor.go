@@ -1,7 +1,6 @@
 package execution
 
 import (
-	"bufio"
 	"bytes"
 	"context"
 	"errors"
@@ -73,6 +72,10 @@ func (r *Executor) exec(container types.Container, c *ExecutionConfig) (stdout b
 	execCreateResponse, err := r.cli.ContainerExecCreate(context.Background(), container.ID, types.ExecConfig{
 		Tty: false,
 		Cmd: []string{
+			"timeout",
+			"-s",
+			"SIGKILL",
+			fmt.Sprint(r.mfest.TaskTimeoutSeconds),
 			"sh",
 			c.Runtime.Runner,
 			c.EntryPoint,
@@ -80,41 +83,28 @@ func (r *Executor) exec(container types.Container, c *ExecutionConfig) (stdout b
 		WorkingDir:   workingDir,
 		AttachStderr: true,
 		AttachStdout: true,
-		Detach:       false,
+		Detach:       true,
 	})
 	if err != nil {
 		return
 	}
 
-	commandDoneStream := make(chan *bufio.Reader)
-	killDoneStream := make(chan bool)
-	go func() {
-		execAttachResponse, err := r.cli.ContainerExecAttach(context.Background(), execCreateResponse.ID, types.ExecStartCheck{
-			Detach: false,
-			Tty:    false,
-		})
-		if err != nil {
-			log.Println(err)
-			return
-		}
-
-		// defer execAttachResponse.Close()
-
-		commandDoneStream <- execAttachResponse.Reader
-	}()
-	go r.kill(container.ID, execCreateResponse.ID, killDoneStream)
-	select {
-	case reader := <-commandDoneStream:
-		_, err = stdcopy.StdCopy(&stdout, &stderr, reader)
-		if err != nil {
-			return
-		}
-		return
-	case <-killDoneStream:
-		err = errors.New("process timed out")
+	execAttachResponse, err := r.cli.ContainerExecAttach(context.Background(), execCreateResponse.ID, types.ExecStartCheck{
+		Detach: false,
+		Tty:    false,
+	})
+	if err != nil {
+		log.Println(err)
 		return
 	}
 
+	defer execAttachResponse.Close()
+
+	_, err = stdcopy.StdCopy(&stdout, &stderr, execAttachResponse.Reader)
+	if err != nil {
+		return
+	}
+	return
 }
 
 // Execute
@@ -154,58 +144,5 @@ func (r *Executor) cleanup(executionId string) error {
 		log.Println(err)
 		return err
 	}
-	return nil
-}
-
-func (r *Executor) getProcessId(execID string) (int, error) {
-	inspectResp, err := r.cli.ContainerExecInspect(context.Background(), execID)
-	if err != nil {
-		return 0, err
-	}
-	log.Println(inspectResp.Pid)
-	return inspectResp.Pid, nil
-}
-
-func (r *Executor) kill(containerID string, execID string, done chan<- bool) error {
-	defer func() {
-		done <- true
-	}()
-	time.Sleep(time.Second * time.Duration(1))
-	pid, err := r.getProcessId(execID)
-	if err != nil {
-		log.Println(err)
-		return err
-	}
-	execCreateResp, err := r.cli.ContainerExecCreate(context.Background(), containerID, types.ExecConfig{
-		Tty: false,
-		Cmd: []string{
-			"kill",
-			// "9", // SIGKILL
-			fmt.Sprint(pid),
-		},
-		Detach: false,
-	})
-	if err != nil {
-		log.Println(err)
-		return err
-	}
-	reader, err := r.cli.ContainerExecAttach(context.Background(), execCreateResp.ID, types.ExecStartCheck{
-		Detach: false,
-	})
-	if err != nil {
-		log.Println(err)
-		return err
-	}
-
-	defer reader.Close()
-	var stdout, stderr bytes.Buffer
-	_, err = stdcopy.StdCopy(&stdout, &stderr, reader.Reader)
-	if err != nil {
-		log.Println(err)
-		return err
-	}
-
-	log.Println(stdout.String())
-	log.Println(stderr.String())
 	return nil
 }
