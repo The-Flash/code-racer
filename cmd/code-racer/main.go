@@ -9,6 +9,8 @@ import (
 
 	"github.com/The-Flash/code-racer/internal/api"
 	"github.com/The-Flash/code-racer/internal/config"
+	"github.com/The-Flash/code-racer/internal/execution"
+	"github.com/The-Flash/code-racer/internal/file_system"
 	"github.com/The-Flash/code-racer/internal/manifest"
 	"github.com/The-Flash/code-racer/internal/names"
 	"github.com/The-Flash/code-racer/internal/runtime_manager"
@@ -65,7 +67,7 @@ func main() {
 		Name: names.DiRuntimeManagerProvider,
 		Build: func(ctn di.Container) (v interface{}, err error) {
 			v = new(runtime_manager.RuntimeManager)
-			v.(*runtime_manager.RuntimeManager).Setup(ctn)
+			v.(*runtime_manager.RuntimeManager).NewRuntimeManager(ctn)
 			return
 		},
 	})
@@ -95,6 +97,26 @@ func main() {
 			c.RunnersMount.MountSourcePath = *runnersPathPtr
 			c.RunnersMount.MountTargetPath = "/runners"
 			return c, nil
+		},
+	})
+
+	// di for files
+	diBuilder.Add(di.Def{
+		Name: names.DiFileProvider,
+		Build: func(ctn di.Container) (interface{}, error) {
+			fp := new(file_system.FileProvider)
+			fp.Setup(ctn)
+			return fp, nil
+		},
+	})
+
+	// di for executor
+	diBuilder.Add(di.Def{
+		Name: names.DiExecutorProvider,
+		Build: func(ctn di.Container) (interface{}, error) {
+			e := new(execution.Executor)
+			e.Setup(ctn)
+			return e, nil
 		},
 	})
 

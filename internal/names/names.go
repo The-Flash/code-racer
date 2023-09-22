@@ -6,4 +6,6 @@ const (
 	DiRuntimeManagerProvider = "runtimeManagerProvider"
 	DiManifestProvider       = "manifestProvider"
 	DiConfigProvider         = "configProvider"
+	DiFileProvider           = "fileProvider"
+	DiExecutorProvider       = "executorProvider"
 )

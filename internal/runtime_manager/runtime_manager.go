@@ -29,7 +29,7 @@ type RuntimeConfig struct {
 	MountSource string
 }
 
-func (r *RuntimeManager) Setup(ctn di.Container) error {
+func (r *RuntimeManager) NewRuntimeManager(ctn di.Container) error {
 	cli := ctn.Get(names.DiDockerClientProvider).(*client.Client)
 	r.cli = cli
 	r.ctx = context.Background()
@@ -54,7 +54,7 @@ func (r *RuntimeManager) checkNumberOfActiveContainersForRuntime(rt *manifest.Ma
 	return numberOfContainers, nil
 }
 
-func (r *RuntimeManager) getContainersForRuntime(rt *manifest.ManifestRuntime) ([]types.Container, error) {
+func (r *RuntimeManager) GetContainersForRuntime(rt *manifest.ManifestRuntime) ([]types.Container, error) {
 	cli := r.cli
 	containers, err := cli.ContainerList(r.ctx, types.ContainerListOptions{
 		All: false,
@@ -100,8 +100,11 @@ func (r *RuntimeManager) scaleUpRuntime(rt *manifest.ManifestRuntime) error {
 		defer reader.Close()
 		io.Copy(os.Stdout, reader)
 		resp, err := cli.ContainerCreate(r.ctx, &containerTypes.Config{
-			Image: rt.Image,
-			Tty:   true,
+			Image:        rt.Image,
+			Tty:          true,
+			AttachStdout: true,
+			AttachStderr: true,
+			AttachStdin:  true,
 		}, &containerTypes.HostConfig{
 			Mounts: []mount.Mount{
 				{
@@ -141,7 +144,7 @@ func (r *RuntimeManager) scaleDownRuntime(rt *manifest.ManifestRuntime) error {
 	if excessContainers < 0 {
 		return nil
 	}
-	runningContainers, err := r.getContainersForRuntime(rt)
+	runningContainers, err := r.GetContainersForRuntime(rt)
 	if err != nil {
 		return err
 	}

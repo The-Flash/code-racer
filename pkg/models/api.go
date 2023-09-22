@@ -12,3 +12,8 @@ type ExecutionFile struct {
 	Name    string `json:"name" validate:"required"`
 	Content string `json:"content" validate:"required"`
 }
+
+type ExecutionResponse struct {
+	Stderr string `json:"stderr"`
+	Stdout string `json:"stdout"`
+}

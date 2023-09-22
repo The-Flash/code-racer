@@ -15,8 +15,9 @@ const (
 )
 
 type Manifest struct {
-	Runtimes      []ManifestRuntime `yaml:"runtimes" json:"runtimes"`
-	PeriodMinutes int               `yaml:"periodMinutes" json:"periodMinutes"`
+	Runtimes           []ManifestRuntime `yaml:"runtimes" json:"runtimes"`
+	PeriodMinutes      int               `yaml:"periodMinutes" json:"periodMinutes"`
+	TaskTimeoutSeconds int               `yaml:"taskTimeoutSeconds" json:"taskTimeoutSeconds"`
 }
 
 type ManifestRuntime struct {
@@ -24,9 +25,10 @@ type ManifestRuntime struct {
 	Image               string              `yaml:"image" json:"image"`
 	Instances           int                 `yaml:"instances" json:"instances"`
 	SchedulingAlgorithm SchedulingAlgorithm `yaml:"schedulingAlgorithm" json:"schedulingAlgorithm"`
+	Runner              string              `yaml:"runner" json:"runner"`
 }
 
-func (m *Manifest) getRuntime(language string) (*ManifestRuntime, bool) {
+func (m *Manifest) GetRuntimeForLanguage(language string) (*ManifestRuntime, bool) {
 	for _, r := range m.Runtimes {
 		if r.Language == language {
 			return &r, true
@@ -41,6 +43,9 @@ func (m *Manifest) GetRuntimes() []ManifestRuntime {
 
 func (m *Manifest) setDefaults() {
 	var runtimes []ManifestRuntime = []ManifestRuntime{}
+	if m.TaskTimeoutSeconds == 0 {
+		m.TaskTimeoutSeconds = 20
+	}
 	for _, r := range m.Runtimes {
 		if r.SchedulingAlgorithm == "" {
 			r.SchedulingAlgorithm = Random

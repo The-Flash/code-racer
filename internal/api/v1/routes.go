@@ -1,6 +1,11 @@
 package v1
 
 import (
+	"errors"
+	"log"
+
+	"github.com/The-Flash/code-racer/internal/execution"
+	"github.com/The-Flash/code-racer/internal/file_system"
 	"github.com/The-Flash/code-racer/internal/manifest"
 	"github.com/The-Flash/code-racer/internal/names"
 	"github.com/The-Flash/code-racer/pkg/models"
@@ -10,12 +15,18 @@ import (
 )
 
 type Router struct {
-	mfest *manifest.Manifest
+	mfest    *manifest.Manifest
+	fp       *file_system.FileProvider
+	executor *execution.Executor
 }
 
 func (r *Router) Setup(route fiber.Router, ctn di.Container) {
 	m := ctn.Get(names.DiManifestProvider).(*manifest.Manifest)
+	fp := ctn.Get(names.DiFileProvider).(*file_system.FileProvider)
+	executor := ctn.Get(names.DiExecutorProvider).(*execution.Executor)
 	r.mfest = m
+	r.fp = fp
+	r.executor = executor
 	route.Get("/health", r.health)
 	route.Get("/runtimes", r.runtimes)
 	route.Post("/execute", r.execute)
@@ -37,9 +48,28 @@ func (r *Router) execute(ctx *fiber.Ctx) error {
 	if err := ctx.BodyParser(body); err != nil {
 		return err
 	}
-
 	if err := validate.Struct(body); err != nil {
 		return err
 	}
-	return ctx.JSON(body)
+
+	runtime, ok := r.mfest.GetRuntimeForLanguage(body.Language)
+	if !ok {
+		return errors.New("runtime not found")
+	}
+	executionId, err := r.executor.Prepare(body.Files)
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+	resp, err := r.executor.Execute(&execution.ExecutionConfig{
+		ExecutionId: executionId,
+		EntryPoint:  body.EntryPoint,
+		Runtime:     runtime,
+	})
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+	return ctx.JSON(resp)
+
 }
