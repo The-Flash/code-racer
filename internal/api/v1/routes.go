@@ -54,12 +54,15 @@ func (r *Router) execute(ctx *fiber.Ctx) error {
 
 	runtime, ok := r.mfest.GetRuntimeForLanguage(body.Language)
 	if !ok {
-		return errors.New("runtime not found")
+		return fiber.NewError(fiber.StatusBadRequest, "runtime not found")
+	}
+	if ok := r.executor.IsExecutorAvailable(runtime); !ok {
+		return fiber.NewError(fiber.StatusBadRequest, "no executors available")
 	}
 	executionId, err := r.executor.Prepare(body.Files)
 	if err != nil {
 		log.Println(err)
-		return err
+		return errors.New("execution failed")
 	}
 	resp, err := r.executor.Execute(&execution.ExecutionConfig{
 		ExecutionId: executionId,
@@ -68,7 +71,7 @@ func (r *Router) execute(ctx *fiber.Ctx) error {
 	})
 	if err != nil {
 		log.Println(err)
-		return err
+		return errors.New("execution failed")
 	}
 	return ctx.JSON(resp)
 

@@ -3,9 +3,9 @@ taskTimeoutSeconds: 10
 runtimes:
   - language: python3
     image: python:3-alpine3.17
-    instances: 1
+    instances: 0
     runner: "/runners/python3/run.sh"
   - language: node
     image: node:18-alpine3.17
-    instances: 0
+    instances: 1
     runner: "/runners/nodejs/run.sh"

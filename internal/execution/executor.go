@@ -107,7 +107,16 @@ func (r *Executor) exec(container types.Container, c *ExecutionConfig) (stdout b
 	return
 }
 
-// Execute
+func (r *Executor) IsExecutorAvailable(rt *manifest.ManifestRuntime) bool {
+	activeContainers, err := r.rm.GetContainersForRuntime(rt)
+	if err != nil {
+		return false
+	}
+	return len(activeContainers) > 0
+}
+
+// Execute execute code
+// Make sure to call Prepare before this
 func (r *Executor) Execute(c *ExecutionConfig) (*models.ExecutionResponse, error) {
 	// check the algorithm for this runtime
 	// algorithm := c.Runtime.SchedulingAlgorithm
@@ -134,8 +143,7 @@ func (r *Executor) Execute(c *ExecutionConfig) (*models.ExecutionResponse, error
 	}, nil
 }
 
-// Cleanup cleanup kills the task inside it's container and deletes its source files
-// It does this after sleeping for the timeout seconds specified in the manifest
+// Cleanup cleanup removes the files created for executionId
 func (r *Executor) cleanup(executionId string) error {
 	time.Sleep(time.Second * time.Duration(r.mfest.TaskTimeoutSeconds))
 	base := filepath.Join(r.config.FsMount.MountSourcePath, executionId)
