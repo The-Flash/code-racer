@@ -88,9 +88,6 @@ func (r *RuntimeManager) scaleUpRuntime(rt *manifest.ManifestRuntime) error {
 	}
 	numberOfContainersToSpinup := preferredNumberOfInstances - numberOfActiveContainers
 	log.Println("Spinning up containers for", rt.Language)
-	go func() {
-
-	}()
 	for i := 0; i < numberOfContainersToSpinup; i++ {
 		// pull image
 		reader, err := cli.ImagePull(r.ctx, rt.Image, types.ImagePullOptions{})
