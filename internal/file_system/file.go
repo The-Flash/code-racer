@@ -6,19 +6,17 @@ import (
 	"path/filepath"
 
 	"github.com/The-Flash/code-racer/internal/config"
-	"github.com/The-Flash/code-racer/internal/names"
 	"github.com/The-Flash/code-racer/pkg/models"
-	"github.com/sarulabs/di/v2"
 )
 
 type FileProvider struct {
 	config *config.Config
 }
 
-func (fp *FileProvider) Setup(ctn di.Container) *FileProvider {
-	config := ctn.Get(names.DiConfigProvider).(*config.Config)
-	fp.config = config
-	return &FileProvider{}
+func NewFileProvider(config *config.Config) *FileProvider {
+	return &FileProvider{
+		config: config,
+	}
 }
 
 // Method to create a single file
