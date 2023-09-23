@@ -3,19 +3,17 @@ package execution
 import (
 	"bytes"
 	"context"
-	"errors"
 	"fmt"
 	"log"
-	"math/rand"
 	"os"
 	"path/filepath"
-	"time"
 
 	"github.com/The-Flash/code-racer/internal/config"
 	"github.com/The-Flash/code-racer/internal/file_system"
 	"github.com/The-Flash/code-racer/internal/manifest"
 	"github.com/The-Flash/code-racer/internal/names"
 	"github.com/The-Flash/code-racer/internal/runtime_manager"
+	"github.com/The-Flash/code-racer/internal/scheduler"
 	"github.com/The-Flash/code-racer/pkg/models"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
@@ -31,31 +29,29 @@ type ExecutionConfig struct {
 }
 
 type Executor struct {
-	mfest  *manifest.Manifest
-	fp     *file_system.FileProvider
-	config *config.Config
-	rm     *runtime_manager.RuntimeManager
-	cli    *client.Client
+	mfest      *manifest.Manifest
+	fp         *file_system.FileProvider
+	config     *config.Config
+	rm         *runtime_manager.RuntimeManager
+	cli        *client.Client
+	schedulers map[string]scheduler.Scheduler
 }
 
 // Setup
 func (r *Executor) Setup(ctn di.Container) {
-	fp := ctn.Get(names.DiFileProvider).(*file_system.FileProvider)
-	config := ctn.Get(names.DiConfigProvider).(*config.Config)
-	rm := ctn.Get(names.DiRuntimeManagerProvider).(*runtime_manager.RuntimeManager)
-	mfest := ctn.Get(names.DiManifestProvider).(*manifest.Manifest)
-	cli := ctn.Get(names.DiDockerClientProvider).(*client.Client)
-	r.fp = fp
-	r.config = config
-	r.rm = rm
-	r.mfest = mfest
-	r.cli = cli
+	r.fp = ctn.Get(names.DiFileProvider).(*file_system.FileProvider)
+	r.config = ctn.Get(names.DiConfigProvider).(*config.Config)
+	r.rm = ctn.Get(names.DiRuntimeManagerProvider).(*runtime_manager.RuntimeManager)
+	r.mfest = ctn.Get(names.DiManifestProvider).(*manifest.Manifest)
+	r.cli = ctn.Get(names.DiDockerClientProvider).(*client.Client)
+	r.schedulers = ctn.Get(names.DiSchedulerProvider).(map[string]scheduler.Scheduler)
 }
 
 // Prepare prepares the execution
 func (r *Executor) Prepare(files []models.ExecutionFile) (executionId string, err error) {
 	executionId = uuid.New().String()
 	base := filepath.Join(r.config.FsMount.MountSourcePath, executionId)
+
 	for _, file := range files {
 		if err := r.fp.CreateFile(base, file); err != nil {
 			return "", err
@@ -65,7 +61,9 @@ func (r *Executor) Prepare(files []models.ExecutionFile) (executionId string, er
 }
 
 func (r *Executor) exec(container types.Container, c *ExecutionConfig) (stdout bytes.Buffer, stderr bytes.Buffer, err error) {
-	go r.cleanup(c.ExecutionId)
+	defer func(executionId string) {
+		go r.cleanup(executionId)
+	}(c.ExecutionId)
 	// create container exec process
 	workingDir := filepath.Join(r.config.FsMount.MountTargetPath, c.ExecutionId)
 
@@ -118,21 +116,17 @@ func (r *Executor) IsExecutorAvailable(rt *manifest.ManifestRuntime) bool {
 // Execute execute code
 // Make sure to call Prepare before this
 func (r *Executor) Execute(c *ExecutionConfig) (*models.ExecutionResponse, error) {
-	// check the algorithm for this runtime
-	// algorithm := c.Runtime.SchedulingAlgorithm
-	// find the next runtime to use
-
-	activeContainers, err := r.rm.GetContainersForRuntime(c.Runtime)
+	executionScheduler := r.schedulers[c.Runtime.Language]
+	var container types.Container
+	var err error
+	if c.Runtime.SchedulingAlgorithm == manifest.RoundRobin {
+		container, err = executionScheduler.RoundRobin.GetNextExecutor(c.Runtime)
+	} else {
+		container, err = executionScheduler.Random.GetNextExecutor(c.Runtime)
+	}
 	if err != nil {
 		return nil, err
 	}
-	numberOfActiveContainers := len(activeContainers)
-	if numberOfActiveContainers == 0 {
-		return nil, errors.New("no executors available")
-	}
-	selectedIndex := rand.Intn(numberOfActiveContainers)
-	container := activeContainers[selectedIndex]
-
 	stdout, stderr, err := r.exec(container, c)
 	if err != nil {
 		return nil, err
@@ -145,7 +139,7 @@ func (r *Executor) Execute(c *ExecutionConfig) (*models.ExecutionResponse, error
 
 // Cleanup cleanup removes the files created for executionId
 func (r *Executor) cleanup(executionId string) error {
-	time.Sleep(time.Second * time.Duration(r.mfest.TaskTimeoutSeconds))
+	// time.Sleep(time.Second * time.Duration(r.mfest.TaskTimeoutSeconds))
 	base := filepath.Join(r.config.FsMount.MountSourcePath, executionId)
 	// TODO: Kill running process
 	if err := os.RemoveAll(base); err != nil {

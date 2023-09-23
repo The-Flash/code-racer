@@ -8,4 +8,5 @@ const (
 	DiConfigProvider         = "configProvider"
 	DiFileProvider           = "fileProvider"
 	DiExecutorProvider       = "executorProvider"
+	DiSchedulerProvider      = "schedulerProvider"
 )

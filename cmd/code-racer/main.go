@@ -14,6 +14,7 @@ import (
 	"github.com/The-Flash/code-racer/internal/manifest"
 	"github.com/The-Flash/code-racer/internal/names"
 	"github.com/The-Flash/code-racer/internal/runtime_manager"
+	"github.com/The-Flash/code-racer/internal/scheduler"
 	"github.com/docker/docker/client"
 	"github.com/joho/godotenv"
 	"github.com/sarulabs/di/v2"
@@ -117,6 +118,16 @@ func main() {
 			e := new(execution.Executor)
 			e.Setup(ctn)
 			return e, nil
+		},
+	})
+
+	diBuilder.Add(di.Def{
+		Name: names.DiSchedulerProvider,
+		Build: func(ctn di.Container) (s interface{}, err error) {
+			m := ctn.Get(names.DiManifestProvider).(*manifest.Manifest)
+			rm := ctn.Get(names.DiRuntimeManagerProvider).(*runtime_manager.RuntimeManager)
+			s = scheduler.Load(m.Runtimes, rm)
+			return
 		},
 	})
 
