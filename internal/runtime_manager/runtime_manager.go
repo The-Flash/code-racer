@@ -103,6 +103,7 @@ func (r *RuntimeManager) scaleUpRuntime(rt *manifest.ManifestRuntime) error {
 			AttachStderr: true,
 			AttachStdin:  true,
 		}, &containerTypes.HostConfig{
+			NetworkMode: r.config.NetworkMode,
 			Mounts: []mount.Mount{
 				{
 					Type:   mount.TypeBind,

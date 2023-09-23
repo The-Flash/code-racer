@@ -1,9 +1,12 @@
 package config
 
+import "github.com/docker/docker/api/types/container"
+
 type Config struct {
 	ManifestPath string
 	FsMount      *FileSystemMount
 	RunnersMount *RunnersDirectoryMount
+	NetworkMode  container.NetworkMode
 }
 
 type FileSystemMount struct {
@@ -21,5 +24,6 @@ func NewConfig(manifestPath string) *Config {
 		ManifestPath: manifestPath,
 		FsMount:      &FileSystemMount{},
 		RunnersMount: &RunnersDirectoryMount{},
+		NetworkMode:  container.NetworkMode("none"), // no network access
 	}
 }
