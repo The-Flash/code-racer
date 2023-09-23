@@ -2,7 +2,9 @@ package v1
 
 import (
 	"errors"
+	"fmt"
 	"log"
+	"time"
 
 	"github.com/The-Flash/code-racer/internal/execution"
 	"github.com/The-Flash/code-racer/internal/file_system"
@@ -51,19 +53,21 @@ func (r *Router) execute(ctx *fiber.Ctx) error {
 	if err := validate.Struct(body); err != nil {
 		return err
 	}
-
 	runtime, ok := r.mfest.GetRuntimeForLanguage(body.Language)
 	if !ok {
 		return fiber.NewError(fiber.StatusBadRequest, "runtime not found")
 	}
 	if ok := r.executor.IsExecutorAvailable(runtime); !ok {
-		return fiber.NewError(fiber.StatusBadRequest, "no executors available")
+		return fiber.NewError(fiber.StatusBadRequest, fmt.Sprintf("no executors available for %v", runtime.Language))
 	}
+
 	executionId, err := r.executor.Prepare(body.Files)
 	if err != nil {
 		log.Println(err)
 		return errors.New("execution failed")
 	}
+
+	executionStartTime := time.Now()
 	resp, err := r.executor.Execute(&execution.ExecutionConfig{
 		ExecutionId: executionId,
 		EntryPoint:  body.EntryPoint,
@@ -73,6 +77,7 @@ func (r *Router) execute(ctx *fiber.Ctx) error {
 		log.Println(err)
 		return errors.New("execution failed")
 	}
+	elapsedTime := time.Since(executionStartTime)
+	resp.ExecutionTime = elapsedTime.String()
 	return ctx.JSON(resp)
-
 }

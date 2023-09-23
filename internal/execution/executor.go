@@ -23,9 +23,12 @@ import (
 )
 
 type ExecutionConfig struct {
+	// Task Exeuction Id
 	ExecutionId string
-	EntryPoint  string
-	Runtime     *manifest.ManifestRuntime
+	// Entrypoint specified by request
+	EntryPoint string
+	// Language runtime for task
+	Runtime *manifest.ManifestRuntime
 }
 
 type Executor struct {
@@ -37,7 +40,7 @@ type Executor struct {
 	schedulers map[string]scheduler.Scheduler
 }
 
-// Setup
+// Setup the executor struct
 func (r *Executor) Setup(ctn di.Container) {
 	r.fp = ctn.Get(names.DiFileProvider).(*file_system.FileProvider)
 	r.config = ctn.Get(names.DiConfigProvider).(*config.Config)
@@ -48,6 +51,9 @@ func (r *Executor) Setup(ctn di.Container) {
 }
 
 // Prepare prepares the execution
+// It creates a directory with the execution id
+// It copies the files to the directory
+// It returns the execution id
 func (r *Executor) Prepare(files []models.ExecutionFile) (executionId string, err error) {
 	executionId = uuid.New().String()
 	base := filepath.Join(r.config.FsMount.MountSourcePath, executionId)
@@ -105,6 +111,7 @@ func (r *Executor) exec(container types.Container, c *ExecutionConfig) (stdout b
 	return
 }
 
+// IsExecutorAvailable checks if there is an available executor/container to use
 func (r *Executor) IsExecutorAvailable(rt *manifest.ManifestRuntime) bool {
 	activeContainers, err := r.rm.GetContainersForRuntime(rt)
 	if err != nil {

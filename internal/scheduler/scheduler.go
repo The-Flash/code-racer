@@ -29,10 +29,10 @@ func Load(m []manifest.ManifestRuntime, rm *runtime_manager.RuntimeManager) map[
 // Scheduler determines which container to use
 // in executions
 type Algorithm interface {
+	// Get the active containers for the runtime
 	GetActiveContainers(rt *manifest.ManifestRuntime) ([]types.Container, error)
-	// IsContainerAlive() bool
 
-	// Get the container to run the execution
+	// Get the next container to run the execution
 	GetNextExecutor(rt *manifest.ManifestRuntime) (types.Container, error)
 }
 
