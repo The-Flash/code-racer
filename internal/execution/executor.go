@@ -66,7 +66,7 @@ func (r *Executor) Prepare(files []models.ExecutionFile) (executionId string, er
 	return
 }
 
-func (r *Executor) exec(container types.Container, c *ExecutionConfig) (stdout bytes.Buffer, stderr bytes.Buffer, err error) {
+func (r *Executor) exec(container *types.Container, c *ExecutionConfig) (stdout bytes.Buffer, stderr bytes.Buffer, err error) {
 	defer func(executionId string) {
 		go r.cleanup(executionId)
 	}(c.ExecutionId)
@@ -134,7 +134,7 @@ func (r *Executor) Execute(c *ExecutionConfig) (*models.ExecutionResponse, error
 	if err != nil {
 		return nil, err
 	}
-	stdout, stderr, err := r.exec(container, c)
+	stdout, stderr, err := r.exec(&container, c)
 	if err != nil {
 		return nil, err
 	}
