@@ -5,9 +5,11 @@ runtimes:
     image: python:3-alpine3.17
     instances: 1
     runner: "/runners/python3/run.sh"
+    setup: "/runners/python3/setup.sh"
     schedulingAlgorithm: random
   - language: node
     image: node:18-alpine3.17
     instances: 2
     runner: "/runners/nodejs/run.sh"
+    setup: "/runners/nodejs/setup.sh"
     schedulingAlgorithm: round-robin

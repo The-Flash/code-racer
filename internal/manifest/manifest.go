@@ -22,10 +22,11 @@ type Manifest struct {
 
 type ManifestRuntime struct {
 	Language            string              `yaml:"language" json:"language"`
-	Image               string              `yaml:"image" json:"image"`
-	Instances           int                 `yaml:"instances" json:"instances"`
-	SchedulingAlgorithm SchedulingAlgorithm `yaml:"schedulingAlgorithm" json:"schedulingAlgorithm"`
-	Runner              string              `yaml:"runner" json:"runner"`
+	Image               string              `yaml:"image" json:"-"`
+	Instances           int                 `yaml:"instances" json:"-"`
+	SchedulingAlgorithm SchedulingAlgorithm `yaml:"schedulingAlgorithm" json:"-"`
+	Runner              string              `yaml:"runner" json:"-"`
+	Setup               string              `yaml:"setup" json:"-"`
 }
 
 func (m *Manifest) GetRuntimeForLanguage(language string) (*ManifestRuntime, bool) {

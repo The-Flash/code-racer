@@ -127,6 +127,7 @@ func (r *RuntimeManager) scaleUpRuntime(rt *manifest.ManifestRuntime) error {
 		if err := cli.ContainerStart(r.ctx, resp.ID, types.ContainerStartOptions{}); err != nil {
 			return err
 		}
+		// TODO: run setup script
 	}
 	log.Printf("Spinned up %d %s container(s)\n", numberOfContainersToSpinup, rt.Language)
 	return nil

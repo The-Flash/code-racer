@@ -29,6 +29,7 @@ func (r *Router) Setup(route fiber.Router, ctn di.Container) {
 	r.mfest = m
 	r.fp = fp
 	r.executor = executor
+	// api endpoints
 	route.Get("/health", r.health)
 	route.Get("/runtimes", r.runtimes)
 	route.Post("/execute", r.execute)
@@ -39,9 +40,8 @@ func (r *Router) health(ctx *fiber.Ctx) error {
 }
 
 func (r *Router) runtimes(ctx *fiber.Ctx) error {
-	return ctx.JSON(fiber.Map{
-		"runtimes": r.mfest.Runtimes,
-	})
+	return ctx.JSON(r.mfest.Runtimes)
+
 }
 
 func (r *Router) execute(ctx *fiber.Ctx) error {
