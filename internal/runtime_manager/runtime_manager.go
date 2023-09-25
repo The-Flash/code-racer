@@ -104,6 +104,9 @@ func (r *RuntimeManager) scaleUpRuntime(rt *manifest.ManifestRuntime) error {
 			AttachStdin:  true,
 		}, &containerTypes.HostConfig{
 			NetworkMode: r.config.NetworkMode,
+			Resources: containerTypes.Resources{
+				Memory: r.config.MemoryLimit,
+			},
 			Mounts: []mount.Mount{
 				{
 					Type:   mount.TypeBind,

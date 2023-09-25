@@ -7,6 +7,7 @@ type Config struct {
 	FsMount      *FileSystemMount
 	RunnersMount *RunnersDirectoryMount
 	NetworkMode  container.NetworkMode
+	MemoryLimit  int64
 }
 
 type FileSystemMount struct {
@@ -25,5 +26,6 @@ func NewConfig(manifestPath string) *Config {
 		FsMount:      &FileSystemMount{},
 		RunnersMount: &RunnersDirectoryMount{},
 		NetworkMode:  container.NetworkMode("none"), // no network access
+		MemoryLimit:  1024 * 1024 * 1024,            // ! GiB
 	}
 }
