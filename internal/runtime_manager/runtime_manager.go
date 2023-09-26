@@ -172,6 +172,7 @@ func (r *RuntimeManager) scaleDownRuntime(rt *manifest.ManifestRuntime) error {
 	return nil
 }
 
+// Run scales up or down containers based on manifest file
 func (r *RuntimeManager) Run() {
 	for {
 		err := r.mfest.Load(r.config.ManifestPath)
