@@ -21,7 +21,6 @@ import (
 type RuntimeManager struct {
 	config *config.Config
 	cli    *client.Client
-	ctx    context.Context
 	mfest  *manifest.Manifest
 }
 
@@ -32,7 +31,6 @@ type RuntimeConfig struct {
 func (r *RuntimeManager) NewRuntimeManager(ctn di.Container) error {
 	cli := ctn.Get(names.DiDockerClientProvider).(*client.Client)
 	r.cli = cli
-	r.ctx = context.Background()
 	r.mfest = ctn.Get(names.DiManifestProvider).(*manifest.Manifest)
 	r.config = ctn.Get(names.DiConfigProvider).(*config.Config)
 	return nil
@@ -40,7 +38,7 @@ func (r *RuntimeManager) NewRuntimeManager(ctn di.Container) error {
 
 func (r *RuntimeManager) checkNumberOfActiveContainersForRuntime(rt *manifest.ManifestRuntime) (int, error) {
 	cli := r.cli
-	containers, err := cli.ContainerList(r.ctx, types.ContainerListOptions{})
+	containers, err := cli.ContainerList(context.Background(), types.ContainerListOptions{})
 	if err != nil {
 		return 0, err
 	}
@@ -56,7 +54,7 @@ func (r *RuntimeManager) checkNumberOfActiveContainersForRuntime(rt *manifest.Ma
 
 func (r *RuntimeManager) GetContainersForRuntime(rt *manifest.ManifestRuntime) ([]types.Container, error) {
 	cli := r.cli
-	containers, err := cli.ContainerList(r.ctx, types.ContainerListOptions{
+	containers, err := cli.ContainerList(context.Background(), types.ContainerListOptions{
 		All: false,
 	})
 	if err != nil {
@@ -90,13 +88,13 @@ func (r *RuntimeManager) scaleUpRuntime(rt *manifest.ManifestRuntime) error {
 	log.Println("Spinning up containers for", rt.Language)
 	for i := 0; i < numberOfContainersToSpinup; i++ {
 		// pull image
-		reader, err := cli.ImagePull(r.ctx, rt.Image, types.ImagePullOptions{})
+		reader, err := cli.ImagePull(context.Background(), rt.Image, types.ImagePullOptions{})
 		if err != nil {
 			return err
 		}
 		defer reader.Close()
 		io.Copy(os.Stdout, reader)
-		resp, err := cli.ContainerCreate(r.ctx, &containerTypes.Config{
+		resp, err := cli.ContainerCreate(context.Background(), &containerTypes.Config{
 			Image:        rt.Image,
 			Tty:          true,
 			AttachStdout: true,
@@ -124,7 +122,7 @@ func (r *RuntimeManager) scaleUpRuntime(rt *manifest.ManifestRuntime) error {
 			log.Println(err)
 			return err
 		}
-		if err := cli.ContainerStart(r.ctx, resp.ID, types.ContainerStartOptions{}); err != nil {
+		if err := cli.ContainerStart(context.Background(), resp.ID, types.ContainerStartOptions{}); err != nil {
 			return err
 		}
 		// TODO: run setup script
@@ -154,7 +152,7 @@ func (r *RuntimeManager) scaleDownRuntime(rt *manifest.ManifestRuntime) error {
 	log.Println("Removing container(s) for", rt.Language)
 	noWaitTimeout := 0
 	for _, container := range containersToRemove {
-		err := cli.ContainerStop(r.ctx, container.ID, containerTypes.StopOptions{
+		err := cli.ContainerStop(context.Background(), container.ID, containerTypes.StopOptions{
 			Timeout: &noWaitTimeout,
 		})
 		if err != nil {
@@ -162,7 +160,7 @@ func (r *RuntimeManager) scaleDownRuntime(rt *manifest.ManifestRuntime) error {
 			return err
 		}
 
-		err = cli.ContainerRemove(r.ctx, container.ID, types.ContainerRemoveOptions{})
+		err = cli.ContainerRemove(context.Background(), container.ID, types.ContainerRemoveOptions{})
 		if err != nil {
 			log.Println(err)
 			return err
