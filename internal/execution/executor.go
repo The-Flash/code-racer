@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"time"
 
-	cappedbuffer "github.com/The-Flash/code-racer/internal"
+	"github.com/The-Flash/code-racer/internal/cappedbuffer"
 	"github.com/The-Flash/code-racer/internal/config"
 	"github.com/The-Flash/code-racer/internal/file_system"
 	"github.com/The-Flash/code-racer/internal/manifest"
