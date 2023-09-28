@@ -2,9 +2,18 @@ version: "3.3"
 services:
   code-racer:
     build: .
-    restart: "on-failure"
-    environment:
-      - PORT=8000
+    command:
+      [
+        "/bin/code-racer",
+        "-f",
+        "manifest.yml",
+        "-m",
+        "${MNTFS}",
+        "-r",
+        "${RUNNERS_PATH}"
+      ]
+    # environment:
+    #   - PORT=8000
     ports:
       - "8000:8000"
     volumes:

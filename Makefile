@@ -3,3 +3,6 @@ dev:
 
 build:
 	go build -o code-racer cmd/code-racer/main.go
+
+nosocket:
+	go build -o nosocket cmd/nosocket/main.go

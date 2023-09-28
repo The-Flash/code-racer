@@ -5,7 +5,6 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"os"
 	"path/filepath"
 
 	"github.com/The-Flash/code-racer/internal/config"
@@ -54,12 +53,11 @@ func (r *Executor) Setup(ctn di.Container) {
 // It creates a directory with the execution id
 // It copies the files to the directory
 // It returns the execution id
-func (r *Executor) Prepare(files []models.ExecutionFile) (executionId string, err error) {
+func (r *Executor) Prepare(containerId string, files []models.ExecutionFile) (executionId string, err error) {
 	executionId = uuid.New().String()
-	base := filepath.Join(r.config.FsMount.MountSourcePath, executionId)
-
+	base := filepath.Join(r.config.FsMount.MountTargetPath, executionId)
 	for _, file := range files {
-		if err := r.fp.CreateFile(base, file); err != nil {
+		if err := r.fp.CreateFile(containerId, base, file); err != nil {
 			return "", err
 		}
 	}
@@ -67,9 +65,9 @@ func (r *Executor) Prepare(files []models.ExecutionFile) (executionId string, er
 }
 
 func (r *Executor) exec(container *types.Container, c *ExecutionConfig) (stdout bytes.Buffer, stderr bytes.Buffer, err error) {
-	defer func(executionId string) {
-		go r.cleanup(executionId)
-	}(c.ExecutionId)
+	defer func(containerId string, executionId string) {
+		go r.cleanup(containerId, executionId)
+	}(container.ID, c.ExecutionId)
 	// create container exec process
 	workingDir := filepath.Join(r.config.FsMount.MountTargetPath, c.ExecutionId)
 
@@ -90,6 +88,7 @@ func (r *Executor) exec(container *types.Container, c *ExecutionConfig) (stdout 
 		Detach:       true,
 	})
 	if err != nil {
+		log.Println(err)
 		return
 	}
 
@@ -121,8 +120,7 @@ func (r *Executor) IsExecutorAvailable(rt *manifest.ManifestRuntime) bool {
 }
 
 // Execute execute code
-// Make sure to call Prepare before this
-func (r *Executor) Execute(c *ExecutionConfig) (*models.ExecutionResponse, error) {
+func (r *Executor) Execute(files []models.ExecutionFile, c *ExecutionConfig) (*models.ExecutionResponse, error) {
 	executionScheduler := r.schedulers[c.Runtime.Language]
 	var container types.Container
 	var err error
@@ -134,6 +132,11 @@ func (r *Executor) Execute(c *ExecutionConfig) (*models.ExecutionResponse, error
 	if err != nil {
 		return nil, err
 	}
+	executionId, err := r.Prepare(container.ID, files)
+	if err != nil {
+		return nil, err
+	}
+	c.ExecutionId = executionId
 	stdout, stderr, err := r.exec(&container, c)
 	if err != nil {
 		return nil, err
@@ -145,12 +148,17 @@ func (r *Executor) Execute(c *ExecutionConfig) (*models.ExecutionResponse, error
 }
 
 // Cleanup cleanup removes the files created for executionId
-func (r *Executor) cleanup(executionId string) error {
-	// time.Sleep(time.Second * time.Duration(r.mfest.TaskTimeoutSeconds))
-	base := filepath.Join(r.config.FsMount.MountSourcePath, executionId)
-	// TODO: Kill running process
-	if err := os.RemoveAll(base); err != nil {
-		log.Println(err)
+func (r *Executor) cleanup(containerId string, executionId string) error {
+	base := filepath.Join(r.config.FsMount.MountTargetPath, executionId)
+	removeFileResponse, err := r.cli.ContainerExecCreate(context.Background(), containerId, types.ExecConfig{
+		Cmd:    []string{"rm", "-rf", base},
+		Tty:    false,
+		Detach: false,
+	})
+	if err != nil {
+		return err
+	}
+	if _, err := r.cli.ContainerExecAttach(context.Background(), removeFileResponse.ID, types.ExecStartCheck{}); err != nil {
 		return err
 	}
 	return nil

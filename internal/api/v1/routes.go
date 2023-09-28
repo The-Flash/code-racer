@@ -61,17 +61,11 @@ func (r *Router) execute(ctx *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusBadRequest, fmt.Sprintf("no executors available for %v", runtime.Language))
 	}
 
-	executionId, err := r.executor.Prepare(body.Files)
-	if err != nil {
-		log.Println(err)
-		return errors.New("execution failed")
-	}
-
 	executionStartTime := time.Now()
-	resp, err := r.executor.Execute(&execution.ExecutionConfig{
-		ExecutionId: executionId,
-		EntryPoint:  body.EntryPoint,
-		Runtime:     runtime,
+	resp, err := r.executor.Execute(body.Files, &execution.ExecutionConfig{
+		// ExecutionId is attached in Execute
+		EntryPoint: body.EntryPoint,
+		Runtime:    runtime,
 	})
 	if err != nil {
 		log.Println(err)

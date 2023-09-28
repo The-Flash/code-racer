@@ -94,6 +94,8 @@ func (r *RuntimeManager) scaleUpRuntime(rt *manifest.ManifestRuntime) error {
 		}
 		defer reader.Close()
 		io.Copy(os.Stdout, reader)
+		log.Println(r.config.FsMount)
+		log.Println(r.config.RunnersMount)
 		resp, err := cli.ContainerCreate(context.Background(), &containerTypes.Config{
 			Image:        rt.Image,
 			Tty:          true,

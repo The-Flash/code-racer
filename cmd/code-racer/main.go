@@ -30,7 +30,7 @@ func main() {
 	flag.Parse()
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		log.Println("Error loading .env file")
 	}
 	diBuilder, err := di.NewBuilder()
 	if err != nil {
@@ -106,7 +106,8 @@ func main() {
 		Name: names.DiFileProvider,
 		Build: func(ctn di.Container) (interface{}, error) {
 			config := ctn.Get(names.DiConfigProvider).(*config.Config)
-			fp := file_system.NewFileProvider(config)
+			cli := ctn.Get(names.DiDockerClientProvider).(*client.Client)
+			fp := file_system.NewFileProvider(config, cli)
 			return fp, nil
 		},
 	})
