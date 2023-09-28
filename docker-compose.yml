@@ -10,7 +10,7 @@ services:
       [
         "/bin/code-racer",
         "-f",
-        "manifest.yml",
+        "${MANIFEST_PATH}",
         "-m",
         "${MNTFS}",
         "-r",
@@ -20,3 +20,4 @@ services:
       - "8000:8000"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+      - ./manifest.yml:/manifest.yml

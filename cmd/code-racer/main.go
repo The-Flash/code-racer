@@ -97,6 +97,7 @@ func main() {
 
 			c.RunnersMount.MountSourcePath = *runnersPathPtr
 			c.RunnersMount.MountTargetPath = "/runners"
+			c.PullImages = os.Getenv("PULL_IMAGES") == "true"
 			return c, nil
 		},
 	})

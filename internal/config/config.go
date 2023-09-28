@@ -9,6 +9,7 @@ type Config struct {
 	NetworkMode     container.NetworkMode
 	MemoryLimit     int64
 	OutputSizeLimit int
+	PullImages      bool
 }
 
 type FileSystemMount struct {
@@ -29,5 +30,6 @@ func NewConfig(manifestPath string) *Config {
 		NetworkMode:     container.NetworkMode("none"), // no network access
 		MemoryLimit:     1024 * 1024 * 1024,            // ! GiB
 		OutputSizeLimit: 2 * 1024 * 1024,               // 2 MiB
+		PullImages:      true,
 	}
 }

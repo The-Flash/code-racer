@@ -87,13 +87,15 @@ func (r *RuntimeManager) scaleUpRuntime(rt *manifest.ManifestRuntime) error {
 	numberOfContainersToSpinup := preferredNumberOfInstances - numberOfActiveContainers
 	log.Println("Spinning up containers for", rt.Language)
 	for i := 0; i < numberOfContainersToSpinup; i++ {
-		// pull image
-		reader, err := cli.ImagePull(context.Background(), rt.Image, types.ImagePullOptions{})
-		if err != nil {
-			return err
+		if r.config.PullImages {
+			// pull image
+			reader, err := cli.ImagePull(context.Background(), rt.Image, types.ImagePullOptions{})
+			if err != nil {
+				return err
+			}
+			defer reader.Close()
+			io.Copy(os.Stdout, reader)
 		}
-		defer reader.Close()
-		io.Copy(os.Stdout, reader)
 		resp, err := cli.ContainerCreate(context.Background(), &containerTypes.Config{
 			Image:        rt.Image,
 			Tty:          true,
