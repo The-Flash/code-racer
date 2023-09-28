@@ -28,6 +28,6 @@ func NewConfig(manifestPath string) *Config {
 		RunnersMount:    &RunnersDirectoryMount{},
 		NetworkMode:     container.NetworkMode("none"), // no network access
 		MemoryLimit:     1024 * 1024 * 1024,            // ! GiB
-		OutputSizeLimit: 4 * 1024 * 1024,               // 4 MiB
+		OutputSizeLimit: 2 * 1024 * 1024,               // 2 MiB
 	}
 }
