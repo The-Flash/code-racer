@@ -3,14 +3,7 @@ testdata_dir = "testdata"
 tmp_dir = "tmp"
 
 [build]
-args_bin = [
-    "-f",
-    "./manifest.yml",
-    "-m",
-    "$(pwd)/mntfs",
-    "-r",
-    "$(pwd)/runners",
-]
+args_bin = ["-f", "$MANIFEST_PATH", "-m", "$MNTFS", "-r", "$RUNNERS_PATH"]
 bin = "./tmp/main"
 cmd = "go build -o ./tmp/main cmd/code-racer/main.go"
 delay = 0

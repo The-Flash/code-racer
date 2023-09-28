@@ -1,6 +1,8 @@
 version: "3.8"
 services:
   code-racer:
+    env_file:
+      - .env
     build:
       context: .
       target: dev
