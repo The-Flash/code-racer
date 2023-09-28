@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"path/filepath"
+	"time"
 
 	"github.com/The-Flash/code-racer/internal/config"
 	"github.com/The-Flash/code-racer/internal/file_system"
@@ -132,18 +133,21 @@ func (r *Executor) Execute(files []models.ExecutionFile, c *ExecutionConfig) (*m
 	if err != nil {
 		return nil, err
 	}
+	prepareTimeStart := time.Now()
 	executionId, err := r.Prepare(container.ID, files)
 	if err != nil {
 		return nil, err
 	}
+	preparationTime := time.Since(prepareTimeStart)
 	c.ExecutionId = executionId
 	stdout, stderr, err := r.exec(&container, c)
 	if err != nil {
 		return nil, err
 	}
 	return &models.ExecutionResponse{
-		Stdout: stdout.String(),
-		Stderr: stderr.String(),
+		Stdout:          stdout.String(),
+		Stderr:          stderr.String(),
+		PreparationTime: preparationTime.String(),
 	}, nil
 }
 

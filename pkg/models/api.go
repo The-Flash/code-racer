@@ -14,7 +14,8 @@ type ExecutionFile struct {
 }
 
 type ExecutionResponse struct {
-	Stderr        string `json:"stderr"`
-	Stdout        string `json:"stdout"`
-	ExecutionTime string `json:"executionTime"`
+	Stderr          string `json:"stderr"`
+	Stdout          string `json:"stdout"`
+	ExecutionTime   string `json:"executionTime"`
+	PreparationTime string `json:"preparationTime"`
 }
