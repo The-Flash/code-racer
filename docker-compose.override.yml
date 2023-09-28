@@ -1,0 +1,11 @@
+version: "3.8"
+services:
+  code-racer:
+    build:
+      context: .
+      target: dev
+      args:
+        - DOCKER_BUILDKIT=1
+    command: [ "air" ]
+    volumes:
+      - ./:/code-racer
