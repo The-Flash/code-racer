@@ -3,11 +3,12 @@ package config
 import "github.com/docker/docker/api/types/container"
 
 type Config struct {
-	ManifestPath string
-	FsMount      *FileSystemMount
-	RunnersMount *RunnersDirectoryMount
-	NetworkMode  container.NetworkMode
-	MemoryLimit  int64
+	ManifestPath    string
+	FsMount         *FileSystemMount
+	RunnersMount    *RunnersDirectoryMount
+	NetworkMode     container.NetworkMode
+	MemoryLimit     int64
+	OutputSizeLimit int
 }
 
 type FileSystemMount struct {
@@ -22,10 +23,11 @@ type RunnersDirectoryMount struct {
 
 func NewConfig(manifestPath string) *Config {
 	return &Config{
-		ManifestPath: manifestPath,
-		FsMount:      &FileSystemMount{},
-		RunnersMount: &RunnersDirectoryMount{},
-		NetworkMode:  container.NetworkMode("none"), // no network access
-		MemoryLimit:  1024 * 1024 * 1024,            // ! GiB
+		ManifestPath:    manifestPath,
+		FsMount:         &FileSystemMount{},
+		RunnersMount:    &RunnersDirectoryMount{},
+		NetworkMode:     container.NetworkMode("none"), // no network access
+		MemoryLimit:     1024 * 1024 * 1024,            // ! GiB
+		OutputSizeLimit: 4 * 1024 * 1024,               // 4 MiB
 	}
 }

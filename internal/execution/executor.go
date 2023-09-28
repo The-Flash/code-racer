@@ -1,13 +1,13 @@
 package execution
 
 import (
-	"bytes"
 	"context"
 	"fmt"
 	"log"
 	"path/filepath"
 	"time"
 
+	cappedbuffer "github.com/The-Flash/code-racer/internal"
 	"github.com/The-Flash/code-racer/internal/config"
 	"github.com/The-Flash/code-racer/internal/file_system"
 	"github.com/The-Flash/code-racer/internal/manifest"
@@ -65,7 +65,7 @@ func (r *Executor) Prepare(containerId string, files []models.ExecutionFile) (ex
 	return
 }
 
-func (r *Executor) exec(container *types.Container, c *ExecutionConfig) (stdout bytes.Buffer, stderr bytes.Buffer, err error) {
+func (r *Executor) exec(container *types.Container, c *ExecutionConfig) (stdout cappedbuffer.CappedBuffer, stderr cappedbuffer.CappedBuffer, err error) {
 	defer func(containerId string, executionId string) {
 		go r.cleanup(containerId, executionId)
 	}(container.ID, c.ExecutionId)
@@ -103,6 +103,9 @@ func (r *Executor) exec(container *types.Container, c *ExecutionConfig) (stdout 
 	}
 
 	defer execAttachResponse.Close()
+
+	stdout = *cappedbuffer.New(make([]byte, 0, r.config.OutputSizeLimit), r.config.OutputSizeLimit)
+	stderr = *cappedbuffer.New(make([]byte, 0, r.config.OutputSizeLimit), r.config.OutputSizeLimit)
 
 	_, err = stdcopy.StdCopy(&stdout, &stderr, execAttachResponse.Reader)
 	if err != nil {
