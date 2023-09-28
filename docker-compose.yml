@@ -1,7 +1,11 @@
-version: "3.3"
+version: "3.8"
 services:
   code-racer:
-    build: .
+    build:
+      context: .
+      target: final
+      args:
+        - DOCKER_BUILDKIT=1
     command:
       [
         "/bin/code-racer",
@@ -12,8 +16,6 @@ services:
         "-r",
         "${RUNNERS_PATH}"
       ]
-    # environment:
-    #   - PORT=8000
     ports:
       - "8000:8000"
     volumes:
