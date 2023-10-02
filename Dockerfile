@@ -1,4 +1,6 @@
-FROM golang:1.19-alpine AS build
+FROM golang:1.21 AS build
+RUN apk add --no-cache gcc
+RUN apk add --no-cache libseccomp-dev
 RUN apk add --no-cache make
 WORKDIR /build
 COPY cmd/ cmd/
@@ -9,8 +11,11 @@ COPY go.mod go.mod
 COPY go.sum go.sum
 RUN make build
 
-FROM golang:1.19-alpine AS dev
-RUN apk add --no-cache make
+FROM golang:1.21 AS dev
+RUN apt-get update
+RUN apt-get install -y build-essential
+RUN apt-get install libseccomp-dev
+RUN apt-get install make
 RUN go install github.com/cosmtrek/air@latest
 WORKDIR /code-racer
 COPY go.mod go.mod

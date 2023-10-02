@@ -6,3 +6,6 @@ build:
 
 nosocket:
 	go build -o nosocket cmd/nosocket/main.go
+
+nosocket-dev:
+	go run cmd/nosocket/main.go
