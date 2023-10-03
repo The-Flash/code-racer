@@ -7,6 +7,7 @@ type Config struct {
 	FsMount         *FileSystemMount
 	RunnersMount    *RunnersDirectoryMount
 	NetworkMode     container.NetworkMode
+	LocalBinPath    string // contains binaries such as nosocket
 	MemoryLimit     int64
 	OutputSizeLimit int
 	PullImages      bool
@@ -31,5 +32,6 @@ func NewConfig(manifestPath string) *Config {
 		MemoryLimit:     1024 * 1024 * 1024,            // ! GiB
 		OutputSizeLimit: 2 * 1024 * 1024,               // 2 MiB
 		PullImages:      true,
+		LocalBinPath:    "/usr/local/bin/nosocket",
 	}
 }

@@ -10,6 +10,7 @@ COPY Makefile Makefile
 COPY go.mod go.mod
 COPY go.sum go.sum
 RUN make build
+RUN make install_nosocket
 
 FROM golang:1.21 AS dev
 RUN apt-get update
@@ -17,12 +18,15 @@ RUN apt-get install -y build-essential
 RUN apt-get install libseccomp-dev
 RUN apt-get install make
 RUN go install github.com/cosmtrek/air@latest
+
 WORKDIR /code-racer
 COPY go.mod go.mod
 COPY go.sum go.sum
 RUN go mod download
 COPY . .
+RUN make install_nosocket
 
 FROM alpine:latest as final
 COPY --from=build /build/code-racer /bin/code-racer
+COPY --from=build /usr/local/bin /usr/local/bin
 COPY runners/ runners/

@@ -118,6 +118,11 @@ func (r *RuntimeManager) scaleUpRuntime(rt *manifest.ManifestRuntime) error {
 					Source: r.config.RunnersMount.MountSourcePath,
 					Target: r.config.RunnersMount.MountTargetPath,
 				},
+				{
+					Type:   mount.TypeBind,
+					Source: r.config.LocalBinPath,
+					Target: "/bin/nosocket",
+				},
 			},
 		}, nil, nil, "")
 		if err != nil {
