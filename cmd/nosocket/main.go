@@ -1,22 +1,14 @@
 package main
 
-// #cgo pkg-config: libseccomp
-/*
-#include <stdlib.h>
-#include <seccomp.h>
-
-const uint32_t C_SCMP_ARCH_X86_64 = SCMP_ARCH_X86_64;
-*/
-// import "C"
 import (
+	"fmt"
 	"log"
-	"net/http"
+	"os"
+	"os/exec"
 
 	libseccomp "github.com/seccomp/libseccomp-golang"
 	"golang.org/x/sys/unix"
 )
-
-// type nativeArch uint32
 
 func main() {
 	unix.Prctl(unix.PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0)
@@ -28,28 +20,37 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	filter.AddArch(libseccomp.ArchX32)
 	filter.AddArch(libseccomp.ArchX86)
-	// filter.AddArch(libseccomp.ArchAMD64)
-	// filter.AddArch(libseccomp.ArchNative)
-	// fmt.Println("Sys call Id", syscallID)
-	syscallID, err := libseccomp.GetSyscallFromName("socket")
-	if err != nil {
-		log.Fatal(err)
-	}
 
-	filter.AddRule(syscallID, libseccomp.ActKillProcess)
-	if err != nil {
-		log.Fatal(err)
+	syscallblacklist := []string{"socket"}
+
+	for _, syscallStr := range syscallblacklist {
+		socketSyscallID, err := libseccomp.GetSyscallFromName(syscallStr)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		filter.AddRule(socketSyscallID, libseccomp.ActKillProcess)
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 
 	if err := filter.Load(); err != nil {
 		log.Fatal(err)
 	}
-	resp, err := http.Get("https://google.com")
+	// start child process
+	output, err := exec.Command(os.Args[1], os.Args[2:]...).Output()
 	if err != nil {
-		log.Fatal("Request err", resp)
+		switch e := err.(type) {
+		case *exec.ExitError:
+			fmt.Print(string(e.Stderr))
+			os.Exit(e.ExitCode())
+		default:
+			fmt.Print(err)
+			os.Exit(1)
+		}
 	}
-	log.Println(resp.Body)
+	fmt.Print(string(output))
 }
