@@ -50,10 +50,10 @@ func main() {
 	if err != nil {
 		switch e := err.(type) {
 		case *exec.ExitError:
-			fmt.Print(string(e.Stderr))
+			os.Stderr.WriteString(string(e.Stderr))
 			os.Exit(e.ExitCode())
 		default:
-			fmt.Print(err)
+			os.Stderr.WriteString(err.Error())
 			os.Exit(1)
 		}
 	}

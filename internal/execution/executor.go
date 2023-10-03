@@ -75,6 +75,7 @@ func (r *Executor) exec(container *types.Container, c *ExecutionConfig) (stdout 
 	execCreateResponse, err := r.cli.ContainerExecCreate(context.Background(), container.ID, types.ExecConfig{
 		Tty: false,
 		Cmd: []string{
+			"nosocket",
 			"timeout",
 			"-s",
 			"SIGKILL",
