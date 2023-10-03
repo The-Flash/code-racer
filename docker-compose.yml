@@ -20,4 +20,5 @@ services:
       - "8000:8000"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+      - /usr/local/bin:/usr/local/bin
       - ./manifest.yml:/manifest.yml
