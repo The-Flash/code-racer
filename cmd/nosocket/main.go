@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -11,6 +12,10 @@ import (
 )
 
 func main() {
+	if len(os.Args) == 1 {
+		fmt.Println(errors.New("no arguments provided"))
+		os.Exit(1)
+	}
 	unix.Prctl(unix.PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0)
 	filter, err := libseccomp.NewFilter(libseccomp.ActAllow)
 	if err != nil {

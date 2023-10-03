@@ -1,24 +1,27 @@
 version: "3.8"
 services:
   code-racer:
+    env_file:
+      - .env
     build:
       context: .
       target: final
       args:
         - DOCKER_BUILDKIT=1
-    command:
-      [
-        "/bin/code-racer",
-        "-f",
-        "${MANIFEST_PATH}",
-        "-m",
-        "${MNTFS}",
-        "-r",
-        "${RUNNERS_PATH}"
-      ]
+    entrypoint: ./entrypoint.sh
+    # command:
+    #   [
+    #     "/bin/code-racer",
+    #     "-f",
+    #     "${MANIFEST_PATH}",
+    #     "-m",
+    #     "${MNTFS}",
+    #     "-r",
+    #     "${RUNNERS_PATH}"
+    #   ]
     ports:
       - "8000:8000"
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /usr/local/bin/nosocket:/usr/local/bin/nosocket
-      - ./manifest.yml:/manifest.yml
+      - /var/run/docker.sock:/var/run/docker.sock # mount docker daemon
+      - ./tmp/:/opt/code-racer # for nosocket binary
+      - ./manifest.yml:/manifest.yml # mount manifest file

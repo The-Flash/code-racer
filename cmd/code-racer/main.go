@@ -24,6 +24,7 @@ var (
 	manifestPtr    = flag.String("f", "", "Path to manifest file")
 	mountPointPtr  = flag.String("m", "", "Path to mount point")
 	runnersPathPtr = flag.String("r", "", "Path to runners directory")
+	nsPathPtr      = flag.String("n", "", "Path to nosocket file")
 )
 
 func main() {
@@ -97,6 +98,11 @@ func main() {
 
 			c.RunnersMount.MountSourcePath = *runnersPathPtr
 			c.RunnersMount.MountTargetPath = "/runners"
+
+			c.NosocketFileMount.MountSourcePath = *nsPathPtr
+			c.NosocketFileMount.MountTargetPath = "/bin/nosocket"
+			println(c.NosocketFileMount.MountSourcePath)
+			println(c.NosocketFileMount.MountTargetPath)
 			c.PullImages = os.Getenv("PULL_IMAGES") == "true"
 			return c, nil
 		},

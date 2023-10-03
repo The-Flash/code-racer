@@ -1,5 +1,4 @@
-NOSOCKET_INSTALL_PATH = /usr/local/bin
-NOSOCKET_TARGET = tmp/nosocket
+NOSOCKET_TARGET = /build/bin/nosocket
 
 dev:
 	go run ./cmd/code-racer/main.go -f manifest.yml -m $(shell pwd)/mntfs -r $(shell pwd)/runners
@@ -15,4 +14,3 @@ nosocket-dev:
 
 install_nosocket:
 	make nosocket
-	mv $(NOSOCKET_TARGET) $(NOSOCKET_INSTALL_PATH)
