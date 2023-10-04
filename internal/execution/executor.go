@@ -1,14 +1,13 @@
 package execution
 
 import (
-	"context"
 	"fmt"
-	"log"
 	"path/filepath"
 	"time"
 
 	"github.com/The-Flash/code-racer/internal/cappedbuffer"
 	"github.com/The-Flash/code-racer/internal/config"
+	"github.com/The-Flash/code-racer/internal/exec_utils"
 	"github.com/The-Flash/code-racer/internal/file_system"
 	"github.com/The-Flash/code-racer/internal/manifest"
 	"github.com/The-Flash/code-racer/internal/names"
@@ -17,7 +16,6 @@ import (
 	"github.com/The-Flash/code-racer/pkg/models"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
-	"github.com/docker/docker/pkg/stdcopy"
 	"github.com/google/uuid"
 	"github.com/sarulabs/di/v2"
 )
@@ -66,8 +64,8 @@ func (r *Executor) Prepare(containerId string, files []models.ExecutionFile) (ex
 }
 
 func (r *Executor) exec(container *types.Container, c *ExecutionConfig) (stdout cappedbuffer.CappedBuffer, stderr cappedbuffer.CappedBuffer, err error) {
-	defer func(containerId string, executionId string) {
-		go r.cleanup(containerId, executionId)
+	defer func(containerID string, executionId string) {
+		go r.cleanup(containerID, executionId)
 	}(container.ID, c.ExecutionId)
 	// create container exec process
 	workingDir := filepath.Join(r.config.FsMount.MountTargetPath, c.ExecutionId)
@@ -87,34 +85,15 @@ func (r *Executor) exec(container *types.Container, c *ExecutionConfig) (stdout 
 	}
 	cmd = append(cmd, defaultCmd...)
 
-	execCreateResponse, err := r.cli.ContainerExecCreate(context.Background(), container.ID, types.ExecConfig{
-		Tty:          false,
-		Cmd:          cmd,
-		WorkingDir:   workingDir,
-		AttachStderr: true,
-		AttachStdout: true,
-		Detach:       true,
-	})
-	if err != nil {
-		log.Println(err)
-		return
-	}
-
-	execAttachResponse, err := r.cli.ContainerExecAttach(context.Background(), execCreateResponse.ID, types.ExecStartCheck{
-		Detach: false,
-		Tty:    false,
-	})
-	if err != nil {
-		log.Println(err)
-		return
-	}
-
-	defer execAttachResponse.Close()
-
-	stdout = *cappedbuffer.New(make([]byte, 0, r.config.OutputSizeLimit), r.config.OutputSizeLimit)
-	stderr = *cappedbuffer.New(make([]byte, 0, r.config.OutputSizeLimit), r.config.OutputSizeLimit)
-
-	_, err = stdcopy.StdCopy(&stdout, &stderr, execAttachResponse.Reader)
+	stdout, stderr, err = exec_utils.ExecCmd(cmd, exec_utils.ExecCmdConfig{
+		StdOutSizeLimit: r.config.OutputSizeLimit,
+		StdErrSizeLimit: r.config.OutputSizeLimit,
+		ExecConfig: &types.ExecConfig{
+			AttachStderr: true,
+			AttachStdout: true,
+			WorkingDir:   workingDir,
+		},
+	}, r.cli, container.ID)
 	if err != nil {
 		return
 	}
@@ -162,18 +141,17 @@ func (r *Executor) Execute(files []models.ExecutionFile, c *ExecutionConfig) (*m
 }
 
 // Cleanup cleanup removes the files created for executionId
-func (r *Executor) cleanup(containerId string, executionId string) error {
+func (r *Executor) cleanup(containerID string, executionId string) error {
 	base := filepath.Join(r.config.FsMount.MountTargetPath, executionId)
-	removeFileResponse, err := r.cli.ContainerExecCreate(context.Background(), containerId, types.ExecConfig{
-		Cmd:    []string{"rm", "-rf", base},
-		Tty:    false,
-		Detach: false,
-	})
+	_, _, err := exec_utils.ExecCmd([]string{"rm", "-rf", base}, exec_utils.ExecCmdConfig{
+		ExecConfig: &types.ExecConfig{
+			Tty:    false,
+			Detach: true,
+		},
+	}, r.cli, containerID)
 	if err != nil {
 		return err
 	}
-	if _, err := r.cli.ContainerExecAttach(context.Background(), removeFileResponse.ID, types.ExecStartCheck{}); err != nil {
-		return err
-	}
+
 	return nil
 }
