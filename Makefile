@@ -7,10 +7,7 @@ build:
 	go build -o bin/code-racer cmd/code-racer/main.go
 
 nosocket:
-	go build -o $(NOSOCKET_TARGET) cmd/nosocket/main.go
+	CGO_ENABLED=1 go build -o $(NOSOCKET_TARGET) cmd/nosocket/main.go
 
 nosocket-dev:
 	go run cmd/nosocket/main.go
-
-install_nosocket:
-	make nosocket
