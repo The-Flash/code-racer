@@ -54,6 +54,29 @@ func (r *RuntimeManager) checkNumberOfActiveContainersForRuntime(rt *manifest.Ma
 	return numberOfContainers, nil
 }
 
+func (r *RuntimeManager) IsContainerReady(containerId string) bool {
+	cmd := []string{"cat", "READY"}
+	stdout, stderr, err := exec_utils.ExecCmd(cmd, exec_utils.ExecCmdConfig{
+		StdOutSizeLimit: r.config.OutputSizeLimit,
+		StdErrSizeLimit: r.config.OutputSizeLimit,
+		ExecConfig: &types.ExecConfig{
+			AttachStderr: true,
+			AttachStdout: true,
+			WorkingDir:   "/",
+		},
+	}, r.cli, containerId)
+	if err != nil {
+		return false
+	}
+	if stdout.String() != "" {
+		return true
+	}
+	if stderr.String() != "" {
+		return false
+	}
+	return false
+}
+
 func (r *RuntimeManager) GetContainersForRuntime(rt *manifest.ManifestRuntime) ([]types.Container, error) {
 	cli := r.cli
 	containers, err := cli.ContainerList(context.Background(), types.ContainerListOptions{
@@ -63,10 +86,10 @@ func (r *RuntimeManager) GetContainersForRuntime(rt *manifest.ManifestRuntime) (
 		return nil, err
 	}
 
-	c := make([]types.Container, 0)
+	c := make([]types.Container, 0, 10)
 
 	for _, container := range containers {
-		if container.Image == rt.Image {
+		if container.Image == rt.Image && r.IsContainerReady(container.ID) {
 			c = append(c, container)
 		}
 	}
