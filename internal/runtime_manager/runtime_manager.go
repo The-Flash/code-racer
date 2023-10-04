@@ -6,9 +6,11 @@ import (
 	"io"
 	"log"
 	"os"
+	"sync"
 	"time"
 
 	"github.com/The-Flash/code-racer/internal/config"
+	"github.com/The-Flash/code-racer/internal/exec_utils"
 	"github.com/The-Flash/code-racer/internal/manifest"
 	"github.com/The-Flash/code-racer/internal/names"
 	"github.com/docker/docker/api/types"
@@ -86,60 +88,92 @@ func (r *RuntimeManager) scaleUpRuntime(rt *manifest.ManifestRuntime) error {
 	}
 	numberOfContainersToSpinup := preferredNumberOfInstances - numberOfActiveContainers
 	log.Println("Spinning up containers for", rt.Language)
+	var wg sync.WaitGroup
 	for i := 0; i < numberOfContainersToSpinup; i++ {
-		if r.config.PullImages {
-			// pull image
-			reader, err := cli.ImagePull(context.Background(), rt.Image, types.ImagePullOptions{})
-			if err != nil {
-				return err
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			if r.config.PullImages {
+				// pull image
+				reader, err := cli.ImagePull(context.Background(), rt.Image, types.ImagePullOptions{})
+				if err != nil {
+					log.Println(err)
+					return
+				}
+				defer reader.Close()
+				io.Copy(os.Stdout, reader)
 			}
-			defer reader.Close()
-			io.Copy(os.Stdout, reader)
-		}
-		mounts := []mount.Mount{
-			{
-				Type:   mount.TypeBind,
-				Source: r.config.FsMount.MountSourcePath,
-				Target: r.config.FsMount.MountTargetPath,
-			},
-			{
-				Type:   mount.TypeBind,
-				Source: r.config.RunnersMount.MountSourcePath,
-				Target: r.config.RunnersMount.MountTargetPath,
-			},
-		}
-		if !r.config.DisableNetworking {
-			mounts = append(mounts, mount.Mount{
-				Type:   mount.TypeBind,
-				Source: r.config.NosocketFileMount.MountSourcePath,
-				Target: r.config.NosocketFileMount.MountTargetPath,
-			},
-			)
-		}
+			mounts := []mount.Mount{
+				{
+					Type:   mount.TypeBind,
+					Source: r.config.FsMount.MountSourcePath,
+					Target: r.config.FsMount.MountTargetPath,
+				},
+				{
+					Type:   mount.TypeBind,
+					Source: r.config.RunnersMount.MountSourcePath,
+					Target: r.config.RunnersMount.MountTargetPath,
+				},
+			}
+			if !r.config.DisableNetworking {
+				mounts = append(mounts, mount.Mount{
+					Type:   mount.TypeBind,
+					Source: r.config.NosocketFileMount.MountSourcePath,
+					Target: r.config.NosocketFileMount.MountTargetPath,
+				},
+				)
+			}
 
-		resp, err := cli.ContainerCreate(context.Background(), &containerTypes.Config{
-			Image:        rt.Image,
-			Tty:          true,
-			AttachStdout: true,
-			AttachStderr: true,
-			AttachStdin:  true,
-		}, &containerTypes.HostConfig{
-			// NetworkMode: r.config.NetworkMode,
-			Resources: containerTypes.Resources{
-				Memory: r.config.MemoryLimit,
-			},
-			Mounts: mounts,
-		}, nil, nil, "")
-		if err != nil {
-			log.Println(err)
-			return err
-		}
-		if err := cli.ContainerStart(context.Background(), resp.ID, types.ContainerStartOptions{}); err != nil {
-			return err
-		}
-		// TODO: run setup script
+			resp, err := cli.ContainerCreate(context.Background(), &containerTypes.Config{
+				Image:        rt.Image,
+				Tty:          true,
+				AttachStdout: true,
+				AttachStderr: true,
+				AttachStdin:  true,
+			}, &containerTypes.HostConfig{
+				// NetworkMode: r.config.NetworkMode,
+				Resources: containerTypes.Resources{
+					Memory: r.config.MemoryLimit,
+				},
+				Mounts: mounts,
+			}, nil, nil, "")
+			if err != nil {
+				log.Println(err)
+				return
+			}
+			if err := cli.ContainerStart(context.Background(), resp.ID, types.ContainerStartOptions{}); err != nil {
+				return
+			}
+			err = r.setupContainer(resp.ID, rt)
+			if err != nil {
+				log.Println("Error setting up container")
+				return
+			}
+			log.Println("Finished setting up container")
+
+		}()
 	}
+	wg.Wait()
 	log.Printf("Spinned up %d %s container(s)\n", numberOfContainersToSpinup, rt.Language)
+	return nil
+}
+
+func (r *RuntimeManager) setupContainer(containerID string, runtime *manifest.ManifestRuntime) error {
+	cmd := []string{
+		"sh",
+		runtime.Setup,
+	}
+	_, _, err := exec_utils.ExecCmd(cmd, exec_utils.ExecCmdConfig{
+		ExecConfig: &types.ExecConfig{
+			AttachStderr: false,
+			AttachStdout: false,
+			Tty:          false,
+			Detach:       true,
+		},
+	}, r.cli, containerID)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
