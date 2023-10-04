@@ -96,6 +96,27 @@ func (r *RuntimeManager) scaleUpRuntime(rt *manifest.ManifestRuntime) error {
 			defer reader.Close()
 			io.Copy(os.Stdout, reader)
 		}
+		mounts := []mount.Mount{
+			{
+				Type:   mount.TypeBind,
+				Source: r.config.FsMount.MountSourcePath,
+				Target: r.config.FsMount.MountTargetPath,
+			},
+			{
+				Type:   mount.TypeBind,
+				Source: r.config.RunnersMount.MountSourcePath,
+				Target: r.config.RunnersMount.MountTargetPath,
+			},
+		}
+		if !r.config.DisableNetworking {
+			mounts = append(mounts, mount.Mount{
+				Type:   mount.TypeBind,
+				Source: r.config.NosocketFileMount.MountSourcePath,
+				Target: r.config.NosocketFileMount.MountTargetPath,
+			},
+			)
+		}
+
 		resp, err := cli.ContainerCreate(context.Background(), &containerTypes.Config{
 			Image:        rt.Image,
 			Tty:          true,
@@ -107,23 +128,7 @@ func (r *RuntimeManager) scaleUpRuntime(rt *manifest.ManifestRuntime) error {
 			Resources: containerTypes.Resources{
 				Memory: r.config.MemoryLimit,
 			},
-			Mounts: []mount.Mount{
-				{
-					Type:   mount.TypeBind,
-					Source: r.config.FsMount.MountSourcePath,
-					Target: r.config.FsMount.MountTargetPath,
-				},
-				{
-					Type:   mount.TypeBind,
-					Source: r.config.RunnersMount.MountSourcePath,
-					Target: r.config.RunnersMount.MountTargetPath,
-				},
-				{
-					Type:   mount.TypeBind,
-					Source: r.config.NosocketFileMount.MountSourcePath,
-					Target: r.config.NosocketFileMount.MountTargetPath,
-				},
-			},
+			Mounts: mounts,
 		}, nil, nil, "")
 		if err != nil {
 			log.Println(err)

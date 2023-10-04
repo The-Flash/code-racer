@@ -11,6 +11,7 @@ type Config struct {
 	MemoryLimit       int64
 	OutputSizeLimit   int
 	PullImages        bool
+	DisableNetworking bool
 }
 
 type FileSystemMount struct {
@@ -38,5 +39,6 @@ func NewConfig(manifestPath string) *Config {
 		OutputSizeLimit:   2 * 1024 * 1024,               // 2 MiB
 		PullImages:        true,
 		NosocketFileMount: &NosocketMount{},
+		DisableNetworking: false,
 	}
 }

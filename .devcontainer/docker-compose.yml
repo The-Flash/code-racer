@@ -7,20 +7,23 @@ services:
     # docker-compose.yml file (the first in the devcontainer.json "dockerComposeFile"
     # array). The sample below assumes your primary file is in the root of your project.
     #
-    # build:
-    #   context: .
-    #   dockerfile: .devcontainer/Dockerfile
+    env_file:
+      - ../.env.development
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
 
     volumes:
       # Update this to wherever you want VS Code to mount the folder of your project
-      - ..:/workspaces:cached
+      - ..:/workspaces/code-racer:cached
+      - /var/run/docker.sock:/var/run/docker.sock # mount docker daemon
+      - ../tmp/:/opt/code-racer # for nosocket binary
+      - ../manifest.yml:/manifest.yml # mount manifest file
+      # Uncomment the next four lines if you will use a ptrace-based debugger like C++, Go, and Rust.
+      # cap_add:
+      #   - SYS_PTRACE
+      # security_opt:
+      #   - seccomp:unconfined
 
-    # Uncomment the next four lines if you will use a ptrace-based debugger like C++, Go, and Rust.
-    # cap_add:
-    #   - SYS_PTRACE
-    # security_opt:
-    #   - seccomp:unconfined
-
-    # Overrides default command so things don't shut down after the process ends.
+      # Overrides default command so things don't shut down after the process ends.
     command: /bin/sh -c "while sleep 1000; do :; done"
- 

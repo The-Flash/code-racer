@@ -30,19 +30,6 @@ COPY go.sum go.sum
 # build nosocket binary to /build/bin/nosocket
 RUN make nosocket
 
-FROM golang:1.21 AS dev
-RUN apt-get update
-RUN apt-get install -y build-essential
-RUN apt-get install libseccomp-dev
-RUN apt-get install make
-RUN go install github.com/cosmtrek/air@latest
-WORKDIR /code-racer
-COPY go.mod go.mod
-COPY go.sum go.sum
-RUN go mod download
-COPY . .
-RUN make nosocket
-
 FROM debian:12 as final
 COPY --from=build /build/bin/code-racer /bin/code-racer
 COPY --from=nosocketbuild /build/bin/nosocket /bin/nosocket

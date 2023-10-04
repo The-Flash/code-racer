@@ -2,7 +2,7 @@ version: "3.8"
 services:
   code-racer:
     env_file:
-      - .env
+      - .env.production
     build:
       context: .
       target: final

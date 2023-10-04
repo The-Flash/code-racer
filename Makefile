@@ -1,7 +1,7 @@
 NOSOCKET_TARGET = /build/bin/nosocket
 
 dev:
-	go run ./cmd/code-racer/main.go -f manifest.yml -m $(shell pwd)/mntfs -r $(shell pwd)/runners
+	go run ./cmd/code-racer/main.go
 
 build:
 	go build -o bin/code-racer cmd/code-racer/main.go

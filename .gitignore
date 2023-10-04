@@ -1,4 +1,5 @@
-.env
+.env*
 mntfs/*
 tmp
 !mntfs/.gitkeep
+!.env.sample

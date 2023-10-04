@@ -71,19 +71,25 @@ func (r *Executor) exec(container *types.Container, c *ExecutionConfig) (stdout 
 	}(container.ID, c.ExecutionId)
 	// create container exec process
 	workingDir := filepath.Join(r.config.FsMount.MountTargetPath, c.ExecutionId)
+	defaultCmd := []string{
+		"timeout",
+		"-s",
+		"SIGKILL",
+		fmt.Sprint(r.mfest.TaskTimeoutSeconds),
+		"sh",
+		c.Runtime.Runner,
+		c.EntryPoint,
+	}
+	cmd := []string{}
+
+	if !r.config.DisableNetworking {
+		cmd = append(cmd, "nosocket")
+	}
+	cmd = append(cmd, defaultCmd...)
 
 	execCreateResponse, err := r.cli.ContainerExecCreate(context.Background(), container.ID, types.ExecConfig{
-		Tty: false,
-		Cmd: []string{
-			"nosocket",
-			"timeout",
-			"-s",
-			"SIGKILL",
-			fmt.Sprint(r.mfest.TaskTimeoutSeconds),
-			"sh",
-			c.Runtime.Runner,
-			c.EntryPoint,
-		},
+		Tty:          false,
+		Cmd:          cmd,
 		WorkingDir:   workingDir,
 		AttachStderr: true,
 		AttachStdout: true,

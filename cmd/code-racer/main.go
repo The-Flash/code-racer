@@ -20,12 +20,12 @@ import (
 	"github.com/sarulabs/di/v2"
 )
 
-var (
-	manifestPtr    = flag.String("f", "", "Path to manifest file")
-	mountPointPtr  = flag.String("m", "", "Path to mount point")
-	runnersPathPtr = flag.String("r", "", "Path to runners directory")
-	nsPathPtr      = flag.String("n", "", "Path to nosocket file")
-)
+// var (
+// 	// manifestPtr    = flag.String("f", "", "Path to manifest file")
+// 	mountPointPtr  = flag.String("m", "", "Path to mount point")
+// 	runnersPathPtr = flag.String("r", "", "Path to runners directory")
+// 	nsPathPtr      = flag.String("n", "", "Path to nosocket file")
+// )
 
 func main() {
 	flag.Parse()
@@ -37,6 +37,8 @@ func main() {
 	if err != nil {
 		log.Fatal("Could not load IoC container")
 	}
+
+	manifestPath := os.Getenv("MANIFEST_PATH")
 
 	// di for docker client connection
 	diBuilder.Add(di.Def{
@@ -80,7 +82,7 @@ func main() {
 		Build: func(ctn di.Container) (m interface{}, err error) {
 			m = new(manifest.Manifest)
 			obj := m.(*manifest.Manifest)
-			err = obj.Load(*manifestPtr)
+			err = obj.Load(manifestPath)
 			return
 		},
 	})
@@ -90,19 +92,18 @@ func main() {
 		Name: names.DiConfigProvider,
 		Build: func(ctn di.Container) (interface{}, error) {
 			c := config.NewConfig(
-				*manifestPtr,
+				manifestPath,
 			)
-			c.ManifestPath = *manifestPtr
-			c.FsMount.MountSourcePath = *mountPointPtr
+			c.ManifestPath = manifestPath
+			c.FsMount.MountSourcePath = os.Getenv("MNTFS")
 			c.FsMount.MountTargetPath = "/code-racer"
 
-			c.RunnersMount.MountSourcePath = *runnersPathPtr
+			c.RunnersMount.MountSourcePath = os.Getenv("RUNNERS_PATH")
 			c.RunnersMount.MountTargetPath = "/runners"
 
-			c.NosocketFileMount.MountSourcePath = *nsPathPtr
+			c.NosocketFileMount.MountSourcePath = os.Getenv("NOSOCKET")
 			c.NosocketFileMount.MountTargetPath = "/bin/nosocket"
-			println(c.NosocketFileMount.MountSourcePath)
-			println(c.NosocketFileMount.MountTargetPath)
+			c.DisableNetworking = os.Getenv("DISABLE_NETWORKING") == "1"
 			c.PullImages = os.Getenv("PULL_IMAGES") == "true"
 			return c, nil
 		},
