@@ -1,9 +1,6 @@
-FROM golang:1.21 AS build
+FROM golang:1.21.1-alpine3.17 AS build
 # install system dependencies
-RUN apt-get update && \
-    apt-get install -y build-essential && \
-    apt-get install libseccomp-dev && \
-    apt-get install make
+RUN apk add make
 WORKDIR /build
 # copy project files
 COPY cmd/ cmd/
