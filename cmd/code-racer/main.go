@@ -20,13 +20,6 @@ import (
 	"github.com/sarulabs/di/v2"
 )
 
-// var (
-// 	// manifestPtr    = flag.String("f", "", "Path to manifest file")
-// 	mountPointPtr  = flag.String("m", "", "Path to mount point")
-// 	runnersPathPtr = flag.String("r", "", "Path to runners directory")
-// 	nsPathPtr      = flag.String("n", "", "Path to nosocket file")
-// )
-
 func main() {
 	flag.Parse()
 	err := godotenv.Load()
@@ -37,8 +30,6 @@ func main() {
 	if err != nil {
 		log.Fatal("Could not load IoC container")
 	}
-
-	manifestPath := os.Getenv("MANIFEST_PATH")
 
 	// di for docker client connection
 	diBuilder.Add(di.Def{
@@ -80,9 +71,10 @@ func main() {
 	diBuilder.Add(di.Def{
 		Name: names.DiManifestProvider,
 		Build: func(ctn di.Container) (m interface{}, err error) {
+			config := ctn.Get(names.DiConfigProvider).(*config.Config)
 			m = new(manifest.Manifest)
 			obj := m.(*manifest.Manifest)
-			err = obj.Load(manifestPath)
+			err = obj.Load(config.ManifestPath)
 			return
 		},
 	})
@@ -91,10 +83,7 @@ func main() {
 	diBuilder.Add(di.Def{
 		Name: names.DiConfigProvider,
 		Build: func(ctn di.Container) (interface{}, error) {
-			c := config.NewConfig(
-				manifestPath,
-			)
-			c.ManifestPath = manifestPath
+			c := config.NewConfig()
 			c.FsMount.MountSourcePath = os.Getenv("MNTFS")
 			c.FsMount.MountTargetPath = "/code-racer"
 

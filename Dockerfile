@@ -36,3 +36,4 @@ COPY --from=nosocketbuild /build/bin/nosocket /bin/nosocket
 COPY --from=build /build/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 COPY runners/ runners/
+COPY manifest.yml manifest.yml

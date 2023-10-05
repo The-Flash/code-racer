@@ -1,13 +1,10 @@
 package config
 
-import "github.com/docker/docker/api/types/container"
-
 type Config struct {
 	ManifestPath      string
 	FsMount           *FileSystemMount
 	RunnersMount      *RunnersDirectoryMount
 	NosocketFileMount *NosocketMount
-	NetworkMode       container.NetworkMode
 	MemoryLimit       int64
 	OutputSizeLimit   int
 	PullImages        bool
@@ -36,14 +33,13 @@ type NosocketMount struct {
 	MountTargetPath string
 }
 
-func NewConfig(manifestPath string) *Config {
+func NewConfig() *Config {
 	return &Config{
-		ManifestPath:      manifestPath,
+		ManifestPath:      "./manifest.yml",
 		FsMount:           &FileSystemMount{},
 		RunnersMount:      &RunnersDirectoryMount{},
-		NetworkMode:       container.NetworkMode("none"), // no network access
-		MemoryLimit:       1024 * 1024 * 1024,            // ! GiB
-		OutputSizeLimit:   2 * 1024 * 1024,               // 2 MiB
+		MemoryLimit:       1024 * 1024 * 1024, // ! GiB
+		OutputSizeLimit:   2 * 1024 * 1024,    // 2 MiB
 		PullImages:        true,
 		NosocketFileMount: &NosocketMount{},
 		DisableNetworking: false,
