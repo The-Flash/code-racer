@@ -12,6 +12,13 @@ type Config struct {
 	OutputSizeLimit   int
 	PullImages        bool
 	DisableNetworking bool
+	PrLimits          *PrLimitsConfig
+}
+
+type PrLimitsConfig struct {
+	MaxProcesses int
+	MaxOpenFiles int
+	MaxFileSize  int
 }
 
 type FileSystemMount struct {
@@ -40,5 +47,10 @@ func NewConfig(manifestPath string) *Config {
 		PullImages:        true,
 		NosocketFileMount: &NosocketMount{},
 		DisableNetworking: false,
+		PrLimits: &PrLimitsConfig{
+			MaxProcesses: 256,
+			MaxOpenFiles: 2048,
+			MaxFileSize:  10 * 1024 * 1024, // 10 MiB
+		},
 	}
 }
