@@ -3,4 +3,3 @@ mntfs/*
 tmp
 !mntfs/.gitkeep
 !.env.sample
-!.env
