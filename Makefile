@@ -1,3 +1,5 @@
+-include .env
+
 NOSOCKET_TARGET = /build/bin/nosocket
 
 dev:
@@ -11,3 +13,17 @@ nosocket:
 
 nosocket-dev:
 	go run cmd/nosocket/main.go
+
+docker-build:
+	docker build -t $(APP_NAME):latest .
+	docker tag $(APP_NAME):latest $(APP_NAME):$(VERSION)
+
+docker-push: docker-build
+	docker push $(APP_NAME):latest
+	docker push $(APP_NAME):$(VERSION)
+
+compose-build:
+	docker-compose build
+
+compose-up:
+	docker-compose up

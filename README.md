@@ -2,6 +2,17 @@
 
 A Remote Code Execution Engine
 
+## Setup
+
+Create a .env file with the following:
+
+```
+VERSION=0.0.3
+APP_NAME=thefl45h/code-racer
+```
+
+This is necessary for building the docker container and using the Makefile
+
 ## Environment variables
 
 * ```PORT```(optional): port to serve requests. Defaults to 8000

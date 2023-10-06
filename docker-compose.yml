@@ -3,6 +3,7 @@ services:
   code-racer:
     env_file:
       - .env.production
+    image: ${APP_NAME}:${VERSION}
     build:
       context: .
       target: final
