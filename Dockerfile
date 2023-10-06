@@ -37,3 +37,5 @@ COPY --from=build /build/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 COPY runners/ runners/
 COPY manifest.yml manifest.yml
+EXPOSE 8000
+ENTRYPOINT [ "./entrypoint.sh" ]

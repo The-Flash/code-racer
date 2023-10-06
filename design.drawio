@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e">
     <diagram id="xYpieU3OsDlBosfl1Ia8" name="Page-1">
-        <mxGraphModel dx="1660" dy="449" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+        <mxGraphModel dx="1292" dy="217" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -160,6 +160,38 @@
                 </mxCell>
                 <mxCell id="hICBj92820vfxaeRLd9u-12" value="&lt;h1&gt;run script template&lt;/h1&gt;&lt;p&gt;cd [execution id]&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;" style="text;html=1;strokeColor=none;fillColor=none;spacing=5;spacingTop=-20;whiteSpace=wrap;overflow=hidden;rounded=0;" parent="1" vertex="1">
                     <mxGeometry x="410" y="880" width="270" height="120" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+    <diagram id="7f6_y2DXu1Kp2oh9O4EI" name="Deployment">
+        <mxGraphModel dx="842" dy="424" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="uIqimO3FQTD6EHcdROwg-6" value="" style="edgeStyle=none;html=1;" edge="1" parent="1" source="uIqimO3FQTD6EHcdROwg-1" target="uIqimO3FQTD6EHcdROwg-5">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="uIqimO3FQTD6EHcdROwg-1" value="Code Racer Repo" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="90" y="70" width="160" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="uIqimO3FQTD6EHcdROwg-4" value="" style="edgeStyle=none;html=1;" edge="1" parent="1" source="uIqimO3FQTD6EHcdROwg-2" target="uIqimO3FQTD6EHcdROwg-3">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="uIqimO3FQTD6EHcdROwg-2" value="Code Racer Infra Repo" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="400" y="80" width="160" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="uIqimO3FQTD6EHcdROwg-8" value="" style="edgeStyle=none;html=1;" edge="1" parent="1" source="uIqimO3FQTD6EHcdROwg-3" target="uIqimO3FQTD6EHcdROwg-7">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="uIqimO3FQTD6EHcdROwg-3" value="Pull image from docker hub" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="400" y="230" width="160" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="uIqimO3FQTD6EHcdROwg-5" value="Push image to docker hub" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="90" y="230" width="160" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="uIqimO3FQTD6EHcdROwg-7" value="Deploy image to AWS" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="400" y="380" width="160" height="70" as="geometry"/>
                 </mxCell>
             </root>
         </mxGraphModel>

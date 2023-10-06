@@ -9,7 +9,6 @@ services:
       target: final
       args:
         - DOCKER_BUILDKIT=1
-    entrypoint: ./entrypoint.sh
     ports:
       - "8000:8000"
     volumes:
