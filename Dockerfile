@@ -13,7 +13,7 @@ COPY go.sum go.sum
 RUN make build
 COPY ./entrypoint.sh ./entrypoint.sh
 
-FROM --platform=$BUILDPLATFORM golang:1.21.1-alpine3.17 as nosocketbuild
+FROM golang:1.21.1-alpine3.17 as nosocketbuild
 ARG TARGETOS TARGETARCH
 RUN apk add clang lld
 ENV GOOS=$TARGETOS
