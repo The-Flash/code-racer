@@ -28,7 +28,7 @@ COPY Makefile Makefile
 COPY go.mod go.mod
 COPY go.sum go.sum
 # build nosocket binary to /build/bin/nosocket
-RUN make nosocket
+RUN --mount=type=cache,target=/go/pkg/mod/ make nosocket
 
 FROM debian:12 as final
 COPY --from=build /build/bin/code-racer /bin/code-racer
