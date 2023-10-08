@@ -10,7 +10,7 @@ COPY Makefile Makefile
 COPY go.mod go.mod
 COPY go.sum go.sum
 # build binary to /build/bin/code-racer
-RUN make build
+RUN --mount=type=cache,target=/go/pkg/mod/ make build
 COPY ./entrypoint.sh ./entrypoint.sh
 
 FROM golang:1.21.1-alpine3.17 as nosocketbuild
