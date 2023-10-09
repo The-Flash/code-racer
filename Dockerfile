@@ -10,7 +10,8 @@ COPY Makefile Makefile
 COPY go.mod go.mod
 COPY go.sum go.sum
 # build binary to /build/bin/code-racer
-RUN --mount=type=cache,target=/go/pkg/mod/ make build
+# RUN --mount=type=cache,target=/go/pkg/mod/ make build
+RUN make build
 COPY ./entrypoint.sh ./entrypoint.sh
 
 FROM golang:1.21.1-alpine3.17 as nosocketbuild
@@ -28,7 +29,8 @@ COPY Makefile Makefile
 COPY go.mod go.mod
 COPY go.sum go.sum
 # build nosocket binary to /build/bin/nosocket
-RUN --mount=type=cache,target=/go/pkg/mod/ make nosocket
+# RUN --mount=type=cache,target=/go/pkg/mod/ make nosocket
+RUN make nosocket
 
 FROM debian:12 as final
 COPY --from=build /build/bin/code-racer /bin/code-racer
