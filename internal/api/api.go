@@ -3,9 +3,11 @@ package api
 import (
 	"fmt"
 	"os"
+	"time"
 
 	v1 "github.com/The-Flash/code-racer/internal/api/v1"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/limiter"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/sarulabs/di/v2"
 )
@@ -32,7 +34,12 @@ func NewAPI(ctn di.Container) (r *API, err error) {
 
 	r.app.Use(recover.New())
 
-	// TODO: add rate limtter
+	// 5 requests per second
+	r.app.Use(limiter.New(limiter.Config{
+		Max:               5,
+		Expiration:        1 * time.Second,
+		LimiterMiddleware: limiter.SlidingWindow{},
+	}))
 
 	new(v1.Router).Setup(r.app.Group("/api/v1"), ctn)
 	return
