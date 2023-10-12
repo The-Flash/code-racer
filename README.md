@@ -74,7 +74,7 @@ POST https://code-racer-api.codewithflash.com/api/v1/execute
 GET https://code-racer-api.codewithflash.com/api/v1/runtimes
 ```
 
-**Runtimes endpoing**
+**Runtimes endpoint**
 
 ```GET /api/v1/runtimes```: Endpoint to list available runtimes
 
