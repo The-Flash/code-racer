@@ -1,6 +1,21 @@
-# Code Racer
+<h1 align="center">Code Racer</h1>
 
-A Remote Code Execution Engine
+<h2 align="center">
+A Remote Code Execution Engine built with Go and ❤️
+</h2>
+
+<p align="center">
+    <a href="https://github.com/The-Flash/code-racer/commits/master">
+    <img src="https://img.shields.io/github/last-commit/The-Flash/code-racer.svg?style=for-the-badge&logo=github&logoColor=white"
+         alt="GitHub last commit">
+    <a href="https://github.com/The-Flash/code-racer/issues">
+    <img src="https://img.shields.io/github/issues/The-Flash/code-racer.svg?style=for-the-badge&logo=github&logoColor=white"
+         alt="GitHub issues">
+    <a href="https://github.com/The-Flash/code-racer/pulls">
+    <img src="https://img.shields.io/github/issues-pr-raw/The-Flash/code-racer.svg?style=for-the-badge&logo=github&logoColor=white"
+         alt="GitHub pull requests">
+</p>
+
 
 ## Setup
 
