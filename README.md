@@ -38,6 +38,13 @@ This project includes a (devcontainer)[https://code.visualstudio.com/docs/devcon
 
 In the dev container, you can use the ```air``` command to start up the server with hot reloading.
 
+## Public API
+
+```
+POST https://code-racer-api.codewithflash.com/api/v1/execute
+GET https://code-racer-api.codewithflash.com/api/v1/runtimes
+```
+
 
 ## Running in production
 
