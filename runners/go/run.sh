@@ -1,2 +1,4 @@
 #!/bin/bash
-go run *.go
+filename=*.go
+shift
+go run $filename "$@"

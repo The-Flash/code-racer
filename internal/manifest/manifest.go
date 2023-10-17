@@ -23,6 +23,7 @@ type Manifest struct {
 type ManifestRuntime struct {
 	Language            string              `yaml:"language" json:"language"`
 	Image               string              `yaml:"image" json:"-"`
+	Version             string              `yaml:"version" json:"version"`
 	Instances           int                 `yaml:"instances" json:"-"`
 	SchedulingAlgorithm SchedulingAlgorithm `yaml:"schedulingAlgorithm" json:"-"`
 	Runner              string              `yaml:"runner" json:"-"`
@@ -50,8 +51,8 @@ func (m *Manifest) setDefaults() {
 	for _, r := range m.Runtimes {
 		if r.SchedulingAlgorithm == "" {
 			r.SchedulingAlgorithm = Random
-			runtimes = append(runtimes, r)
 		}
+		runtimes = append(runtimes, r)
 	}
 	copy(m.Runtimes, runtimes)
 }

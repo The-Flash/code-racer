@@ -175,9 +175,9 @@ func (r *RuntimeManager) scaleUpRuntime(rt *manifest.ManifestRuntime) error {
 			log.Println("Finished setting up container")
 
 		}()
+		log.Printf("Spinned up %d %s container(s)\n", numberOfContainersToSpinup, rt.Language)
 	}
 	wg.Wait()
-	log.Printf("Spinned up %d %s container(s)\n", numberOfContainersToSpinup, rt.Language)
 	return nil
 }
 

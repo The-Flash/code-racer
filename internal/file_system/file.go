@@ -39,7 +39,7 @@ func (fp *FileProvider) CreateFile(containerId string, base string, file models.
 		return err
 	}
 	name := filepath.Base(file.Name)
-	_, _, err = exec_utils.ExecCmd([]string{"sh", "-c", fmt.Sprintf("echo \"%s\" > %s", file.Content, name)}, exec_utils.ExecCmdConfig{
+	_, _, err = exec_utils.ExecCmd([]string{"sh", "-c", fmt.Sprintf("echo '%s' > %s", file.Content, name)}, exec_utils.ExecCmdConfig{
 		ExecConfig: &types.ExecConfig{
 			Tty:        false,
 			Detach:     true,
