@@ -143,6 +143,6 @@ Response
 
 ## Supported Languages
 
-```python```, ```node```
+```python```, ```node```, ```go```
 
 More to come
