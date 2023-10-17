@@ -46,7 +46,7 @@ func NewConfig() *Config {
 		PrLimits: &PrLimitsConfig{
 			MaxProcesses: 256,
 			MaxOpenFiles: 2048,
-			MaxFileSize:  10 * 1024 * 1024, // 10 MiB
+			MaxFileSize:  50 * 1024 * 1024, // 50 MiB
 		},
 	}
 }
