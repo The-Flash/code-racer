@@ -13,3 +13,8 @@ runtimes:
     runner: "/runners/nodejs/run.sh"
     setup: "/runners/nodejs/setup.sh"
     schedulingAlgorithm: round-robin
+  - language: go
+    image: golang:1.21.1-alpine3.17
+    instances: 1
+    runner: "/runners/go/run.sh"
+    setup: "/runners/go/setup.sh"
