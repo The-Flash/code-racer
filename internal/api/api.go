@@ -7,6 +7,7 @@ import (
 
 	v1 "github.com/The-Flash/code-racer/internal/api/v1"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/limiter"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/sarulabs/di/v2"
@@ -33,6 +34,8 @@ func NewAPI(ctn di.Container) (r *API, err error) {
 	})
 
 	r.app.Use(recover.New())
+
+	r.app.Use(cors.New())
 
 	// 5 requests per second
 	r.app.Use(limiter.New(limiter.Config{
