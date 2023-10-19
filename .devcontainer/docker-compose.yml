@@ -18,6 +18,7 @@ services:
       - ..:/workspaces/code-racer:cached
       - /var/run/docker.sock:/var/run/docker.sock # mount docker daemon
       - ../tmp/:/opt/code-racer # for nosocket binary
+      - ${MNTFS}:/code-racer # for creating files/folders for execution
       # Uncomment the next four lines if you will use a ptrace-based debugger like C++, Go, and Rust.
       # cap_add:
       #   - SYS_PTRACE

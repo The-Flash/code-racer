@@ -2,13 +2,11 @@
 package file_system
 
 import (
-	"fmt"
+	"os"
 	"path/filepath"
 
 	"github.com/The-Flash/code-racer/internal/config"
-	"github.com/The-Flash/code-racer/internal/exec_utils"
 	"github.com/The-Flash/code-racer/pkg/models"
-	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
 )
 
@@ -26,28 +24,21 @@ func NewFileProvider(config *config.Config, cli *client.Client) *FileProvider {
 
 // Method to create a single file
 func (fp *FileProvider) CreateFile(containerId string, base string, file models.ExecutionFile) error {
-	cli := fp.cli
+	// cli := fp.cli
 	dir := filepath.Dir(file.Name)
 	dirPart := filepath.Join(base, dir)
-	_, _, err := exec_utils.ExecCmd([]string{"mkdir", "-p", dirPart}, exec_utils.ExecCmdConfig{
-		ExecConfig: &types.ExecConfig{
-			Tty:    false,
-			Detach: true,
-		},
-	}, cli, containerId)
+	err := os.MkdirAll(base, os.ModePerm)
 	if err != nil {
 		return err
 	}
-	name := filepath.Base(file.Name)
-	_, _, err = exec_utils.ExecCmd([]string{"sh", "-c", fmt.Sprintf("echo '%s' > %s", file.Content, name)}, exec_utils.ExecCmdConfig{
-		ExecConfig: &types.ExecConfig{
-			Tty:        false,
-			Detach:     true,
-			WorkingDir: dirPart,
-		},
-	}, cli, containerId)
+	f, err := os.Create(filepath.Join(dirPart, file.Name))
 	if err != nil {
 		return err
 	}
+	defer f.Close()
+	if _, err = f.WriteString(file.Content); err != nil {
+		return err
+	}
+	f.Sync()
 	return nil
 }

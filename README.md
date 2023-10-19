@@ -45,6 +45,7 @@ This is necessary for building the docker container and using the Makefile
 ## Running in development
 
 Create an ```.env.development``` with the above environment variables. Refer to ```.env.sample```
+Create an ```.devcontainer/.env``` with the environment variables in ```.devcontainer/.env.sample```
 
 We strongly recommend docker/docker-compose for a smooth development
 process.
