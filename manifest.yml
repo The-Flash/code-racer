@@ -3,7 +3,7 @@ taskTimeoutSeconds: 10 # maximum time for task execution
 runtimes:
   - language: python3
     image: python:3-alpine3.17
-    version: 3
+    version: 3.12.0
     instances: 2
     runner: "/runners/python3/run.sh"
     setup: "/runners/python3/setup.sh"
