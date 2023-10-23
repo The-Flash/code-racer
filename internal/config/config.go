@@ -35,7 +35,7 @@ type NosocketMount struct {
 
 func NewConfig() *Config {
 	return &Config{
-		ManifestPath:      "./manifest.yml",
+		ManifestPath:      "/manifest.yml",
 		FsMount:           &FileSystemMount{},
 		RunnersMount:      &RunnersDirectoryMount{},
 		MemoryLimit:       1024 * 1024 * 1024, // ! GiB

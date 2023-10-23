@@ -7,7 +7,8 @@ runtimes:
     instances: 2
     runner: "/runners/python3/run.sh"
     setup: "/runners/python3/setup.sh"
-    schedulingAlgorithm: random
+    schedulingAlgorithm: round-robin
+
   - language: node
     version: 18.18.2
     image: node:18-alpine3.17
@@ -15,7 +16,9 @@ runtimes:
     runner: "/runners/nodejs/run.sh"
     setup: "/runners/nodejs/setup.sh"
     schedulingAlgorithm: round-robin
+
   - language: go
+    schedulingAlgorithm: round-robin
     version: 1.21.1
     image: golang:1.21.1-alpine3.17
     instances: 2
