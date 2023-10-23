@@ -18,6 +18,6 @@ runtimes:
   - language: go
     version: 1.21.1
     image: golang:1.21.1-alpine3.17
-    instances: 1
+    instances: 2
     runner: "/runners/go/run.sh"
     setup: "/runners/go/setup.sh"
