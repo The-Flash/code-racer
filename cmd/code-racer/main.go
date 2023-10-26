@@ -53,7 +53,7 @@ func main() {
 	diBuilder.Add(di.Def{
 		Name: names.DiAPIProvider,
 		Build: func(ctn di.Container) (interface{}, error) {
-			return api.NewAPI(ctn)
+			return api.New(ctn)
 		},
 	})
 
@@ -138,6 +138,7 @@ func main() {
 	go rtm.Run()
 
 	go api.ListenAndServeBlocking()
+	go api.ListenAndServeBlockingMetrics()
 
 	sigs := make(chan os.Signal, 1)
 

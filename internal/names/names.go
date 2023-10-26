@@ -9,4 +9,5 @@ const (
 	DiFileProvider           = "fileProvider"
 	DiExecutorProvider       = "executorProvider"
 	DiSchedulerProvider      = "schedulerProvider"
+	DiMetricsServerProvider  = "metricsServerProvider"
 )
