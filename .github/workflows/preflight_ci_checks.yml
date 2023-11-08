@@ -1,0 +1,23 @@
+name: Preflight CI Checks
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repo
+        uses: actions/checkout@v2
+
+      - name: setup go
+        uses: actions/setup-go@v4
+        with:
+          go-version: "^1.20.0"
+
+      - name: install dependencies
+        run: go mod download
+
+      - name: run tests
+        run: go test ./...
