@@ -14,6 +14,9 @@ A Remote Code Execution Engine built with Go and ❤️
     <a href="https://github.com/The-Flash/code-racer/pulls">
     <img src="https://img.shields.io/github/issues-pr-raw/The-Flash/code-racer.svg?style=for-the-badge&logo=github&logoColor=white"
          alt="GitHub pull requests">
+    <a href="https://github.com/The-Flash/code-racer/actions">
+    <img src="https://img.shields.io/github/actions/workflow/status/The-Flash/code-racer/preflight_ci_checks.yml"
+         alt="Tests">
 </p>
 
 
