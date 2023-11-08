@@ -11,6 +11,9 @@ jobs:
       - name: checkout repo
         uses: actions/checkout@v2
 
+      - name: apt update
+        run: sudo apt-get update
+
       - name: setup go
         uses: actions/setup-go@v4
         with:
