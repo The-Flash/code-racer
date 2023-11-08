@@ -1,9 +1,6 @@
 package manifest
 
 import (
-	"log"
-	"os"
-
 	"gopkg.in/yaml.v3"
 )
 
@@ -57,12 +54,8 @@ func (m *Manifest) setDefaults() {
 	copy(m.Runtimes, runtimes)
 }
 
-func (m *Manifest) Load(manifestPath string) error {
-	manifestData, err := os.ReadFile(manifestPath)
-	if err != nil {
-		log.Fatal("could not read manifest file", err)
-	}
-	err = yaml.Unmarshal(manifestData, &m)
+func (m *Manifest) Load(data []byte) error {
+	err := yaml.Unmarshal(data, &m)
 	m.setDefaults()
 	return err
 }

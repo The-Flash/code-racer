@@ -74,7 +74,11 @@ func main() {
 			config := ctn.Get(names.DiConfigProvider).(*config.Config)
 			m = new(manifest.Manifest)
 			obj := m.(*manifest.Manifest)
-			err = obj.Load(config.ManifestPath)
+			manifestData, err := os.ReadFile(config.ManifestPath)
+			if err != nil {
+				return
+			}
+			err = obj.Load(manifestData)
 			return
 		},
 	})
