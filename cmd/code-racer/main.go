@@ -106,9 +106,7 @@ func main() {
 	diBuilder.Add(di.Def{
 		Name: names.DiFileProvider,
 		Build: func(ctn di.Container) (interface{}, error) {
-			config := ctn.Get(names.DiConfigProvider).(*config.Config)
-			cli := ctn.Get(names.DiDockerClientProvider).(*client.Client)
-			fp := file_system.NewFileProvider(config, cli)
+			fp := file_system.NewFileProvider()
 			return fp, nil
 		},
 	})

@@ -56,7 +56,7 @@ func (r *Executor) Prepare(containerId string, files []models.ExecutionFile) (ex
 	executionId = uuid.New().String()
 	base := filepath.Join(r.config.FsMount.MountTargetPath, executionId)
 	for _, file := range files {
-		if err := r.fp.CreateFile(containerId, base, file); err != nil {
+		if err := r.fp.CreateFile(base, file); err != nil {
 			return "", err
 		}
 	}

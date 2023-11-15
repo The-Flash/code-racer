@@ -5,25 +5,17 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/The-Flash/code-racer/internal/config"
 	"github.com/The-Flash/code-racer/pkg/models"
-	"github.com/docker/docker/client"
 )
 
-type FileProvider struct {
-	config *config.Config
-	cli    *client.Client
-}
+type FileProvider struct{}
 
-func NewFileProvider(config *config.Config, cli *client.Client) *FileProvider {
-	return &FileProvider{
-		config: config,
-		cli:    cli,
-	}
+func NewFileProvider() *FileProvider {
+	return &FileProvider{}
 }
 
 // Method to create a single file
-func (fp *FileProvider) CreateFile(containerId string, base string, file models.ExecutionFile) error {
+func (fp *FileProvider) CreateFile(base string, file models.ExecutionFile) error {
 	// cli := fp.cli
 	dir := filepath.Dir(file.Name)
 	dirPart := filepath.Join(base, dir)
