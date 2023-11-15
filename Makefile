@@ -27,3 +27,6 @@ compose-build:
 
 compose-up:
 	docker-compose up
+
+test:
+	go test ./...
