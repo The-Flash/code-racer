@@ -153,6 +153,7 @@ func (r *RuntimeManager) scaleUpRuntime(rt *manifest.ManifestRuntime) error {
 				AttachStdout: true,
 				AttachStderr: true,
 				AttachStdin:  true,
+				Labels:       map[string]string{},
 			}, &containerTypes.HostConfig{
 				// NetworkMode: r.config.NetworkMode,
 				Resources: containerTypes.Resources{
@@ -173,9 +174,8 @@ func (r *RuntimeManager) scaleUpRuntime(rt *manifest.ManifestRuntime) error {
 				return
 			}
 			log.Println("Finished setting up container")
-
 		}()
-		log.Printf("Spinned up %d %s container(s)\n", numberOfContainersToSpinup, rt.Language)
+		// log.Printf("Spinned up %d %s container(s)\n", numberOfContainersToSpinup, rt.Language)
 	}
 	wg.Wait()
 	return nil
@@ -237,7 +237,7 @@ func (r *RuntimeManager) scaleDownRuntime(rt *manifest.ManifestRuntime) error {
 		log.Println("Removing container", container.ID)
 
 	}
-	log.Printf("Removed %d %s container(s)\n", excessContainers, rt.Language)
+	// log.Printf("Removed %d %s container(s)\n", excessContainers, rt.Language)
 	return nil
 }
 

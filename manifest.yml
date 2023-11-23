@@ -8,6 +8,8 @@ runtimes:
     runner: "/runners/python3/run.sh"
     setup: "/runners/python3/setup.sh"
     schedulingAlgorithm: round-robin
+    labels:
+      runtime: python3
 
   - language: node
     version: 18.18.2
@@ -16,6 +18,8 @@ runtimes:
     runner: "/runners/nodejs/run.sh"
     setup: "/runners/nodejs/setup.sh"
     schedulingAlgorithm: round-robin
+    labels:
+      runtime: node
 
   - language: go
     schedulingAlgorithm: round-robin
@@ -24,3 +28,5 @@ runtimes:
     instances: 2
     runner: "/runners/go/run.sh"
     setup: "/runners/go/setup.sh"
+    labels:
+      runtime: go

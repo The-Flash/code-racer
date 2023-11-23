@@ -25,6 +25,7 @@ type ManifestRuntime struct {
 	SchedulingAlgorithm SchedulingAlgorithm `yaml:"schedulingAlgorithm" json:"-"`
 	Runner              string              `yaml:"runner" json:"-"`
 	Setup               string              `yaml:"setup" json:"-"`
+	Labels              map[string]string   `yaml:"labels"`
 }
 
 func (m *Manifest) GetRuntimeForLanguage(language string) (*ManifestRuntime, bool) {
@@ -38,6 +39,14 @@ func (m *Manifest) GetRuntimeForLanguage(language string) (*ManifestRuntime, boo
 
 func (m *Manifest) GetRuntimes() []ManifestRuntime {
 	return m.Runtimes
+}
+
+func (m *Manifest) GetLabels(language string) map[string]string {
+	runtime, ok := m.GetRuntimeForLanguage(language)
+	if !ok {
+		return nil
+	}
+	return runtime.Labels
 }
 
 func (m *Manifest) setDefaults() {

@@ -148,4 +148,5 @@ func main() {
 	<-sigs
 
 	ctn.DeleteWithSubContainers()
+	// TODO: Delete spinned up containers
 }
