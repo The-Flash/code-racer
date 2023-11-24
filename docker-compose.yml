@@ -3,7 +3,7 @@ services:
   code-racer:
     env_file:
       - .env.production
-    image: ${APP_NAME}:${VERSION}
+    image: thef45h/code-racer:latest
     build:
       context: .
       target: final
