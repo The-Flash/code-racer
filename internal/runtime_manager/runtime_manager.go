@@ -3,6 +3,7 @@ package runtime_manager
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"log"
 	"os"
@@ -15,6 +16,7 @@ import (
 	"github.com/The-Flash/code-racer/internal/names"
 	"github.com/docker/docker/api/types"
 	containerTypes "github.com/docker/docker/api/types/container"
+	"github.com/docker/docker/api/types/filters"
 	"github.com/docker/docker/api/types/mount"
 	"github.com/docker/docker/client"
 	"github.com/sarulabs/di/v2"
@@ -39,19 +41,8 @@ func (r *RuntimeManager) NewRuntimeManager(ctn di.Container) error {
 }
 
 func (r *RuntimeManager) checkNumberOfActiveContainersForRuntime(rt *manifest.ManifestRuntime) (int, error) {
-	cli := r.cli
-	containers, err := cli.ContainerList(context.Background(), types.ContainerListOptions{})
-	if err != nil {
-		return 0, err
-	}
-	runtimeImageName := rt.Image
-	numberOfContainers := 0
-	for _, container := range containers {
-		if container.Image == runtimeImageName {
-			numberOfContainers++
-		}
-	}
-	return numberOfContainers, nil
+	containers, err := r.GetContainersForRuntime(rt)
+	return len(containers), err
 }
 
 func (r *RuntimeManager) IsContainerReady(containerId string) bool {
@@ -79,8 +70,14 @@ func (r *RuntimeManager) IsContainerReady(containerId string) bool {
 
 func (r *RuntimeManager) GetContainersForRuntime(rt *manifest.ManifestRuntime) ([]types.Container, error) {
 	cli := r.cli
+	filters := filters.NewArgs()
+	labels := rt.Labels
+	for k, v := range labels {
+		filters.Add("label", fmt.Sprintf("%s=%s", k, v))
+	}
 	containers, err := cli.ContainerList(context.Background(), types.ContainerListOptions{
-		All: false,
+		All:     false,
+		Filters: filters,
 	})
 	if err != nil {
 		return nil, err
@@ -89,7 +86,7 @@ func (r *RuntimeManager) GetContainersForRuntime(rt *manifest.ManifestRuntime) (
 	c := make([]types.Container, 0, 10)
 
 	for _, container := range containers {
-		if container.Image == rt.Image && r.IsContainerReady(container.ID) {
+		if r.IsContainerReady(container.ID) {
 			c = append(c, container)
 		}
 	}
@@ -153,7 +150,7 @@ func (r *RuntimeManager) scaleUpRuntime(rt *manifest.ManifestRuntime) error {
 				AttachStdout: true,
 				AttachStderr: true,
 				AttachStdin:  true,
-				Labels:       map[string]string{},
+				Labels:       rt.Labels,
 			}, &containerTypes.HostConfig{
 				// NetworkMode: r.config.NetworkMode,
 				Resources: containerTypes.Resources{
@@ -235,9 +232,7 @@ func (r *RuntimeManager) scaleDownRuntime(rt *manifest.ManifestRuntime) error {
 			return err
 		}
 		log.Println("Removing container", container.ID)
-
 	}
-	// log.Printf("Removed %d %s container(s)\n", excessContainers, rt.Language)
 	return nil
 }
 
@@ -258,14 +253,14 @@ func (r *RuntimeManager) Run() {
 				log.Fatal("could not check number of running instances", err)
 			}
 			if runningInstances < runtime.Instances {
-				log.Println("too few instances running")
+				log.Printf("too few instances of %s running", runtime.Language)
 				// spin up containers
 				err := r.scaleUpRuntime(&runtime)
 				if err != nil {
 					log.Println("could not scale up runtime", err)
 				}
 			} else if runningInstances > runtime.Instances {
-				log.Println("too many instances running")
+				log.Printf("too many instances of %s running\n", runtime.Language)
 				err := r.scaleDownRuntime(&runtime)
 				if err != nil {
 					log.Println("could not scale up runtime", err)
