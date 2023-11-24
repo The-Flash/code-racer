@@ -74,12 +74,10 @@ func (r *Executor) exec(container *types.Container, c *ExecutionConfig) (stdout 
 		"--nproc=" + fmt.Sprint(r.config.PrLimits.MaxProcesses),
 		"--nofile=" + fmt.Sprint(r.config.PrLimits.MaxOpenFiles),
 		"--fsize=" + fmt.Sprint(r.config.PrLimits.MaxFileSize),
-
 		"timeout",
 		"-s",
 		"SIGKILL",
 		fmt.Sprint(r.mfest.TaskTimeoutSeconds),
-
 		"sh",
 		c.Runtime.Runner,
 		c.EntryPoint,
