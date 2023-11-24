@@ -1,5 +1,5 @@
 periodMinutes: 1 # periodic check to scale up or down containers
-taskTimeoutSeconds: 10 # maximum time for task execution
+taskTimeoutSeconds: 5 # maximum time for task execution
 runtimes:
   - language: python3
     image: python:3-alpine3.17
