@@ -73,6 +73,8 @@ func (r *Executor) exec(container *types.Container, c *ExecutionConfig) (stdout 
 		"timeout",
 		"-s",
 		"SIGKILL",
+		"-k",
+		fmt.Sprint(r.mfest.TaskTimeoutSeconds),
 		fmt.Sprint(r.mfest.TaskTimeoutSeconds),
 		"prlimit",
 		"--nproc=" + fmt.Sprint(r.config.PrLimits.MaxProcesses),
