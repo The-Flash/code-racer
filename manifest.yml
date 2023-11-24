@@ -13,7 +13,7 @@ runtimes:
 
   - language: node
     version: 18.18.2
-    image: node:18-alpine3.17
+    image: node:lts
     instances: 2
     runner: "/runners/nodejs/run.sh"
     setup: "/runners/nodejs/setup.sh"
