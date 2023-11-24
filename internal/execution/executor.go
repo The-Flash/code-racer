@@ -70,18 +70,12 @@ func (r *Executor) exec(container *types.Container, c *ExecutionConfig) (stdout 
 	// create container exec process
 	workingDir := filepath.Join(r.config.FsMount.MountTargetPath, c.ExecutionId)
 	defaultCmd := []string{
-		"timeout",
-		"-s",
-		"SIGKILL",
-		"-k",
-		fmt.Sprint(r.mfest.TaskTimeoutSeconds),
-		fmt.Sprint(r.mfest.TaskTimeoutSeconds),
-		"prlimit",
-		"--nproc=" + fmt.Sprint(r.config.PrLimits.MaxProcesses),
-		"--nofile=" + fmt.Sprint(r.config.PrLimits.MaxOpenFiles),
-		"--fsize=" + fmt.Sprint(r.config.PrLimits.MaxFileSize),
 		"sh",
 		c.Runtime.Runner,
+		fmt.Sprint(r.config.PrLimits.MaxProcesses),
+		fmt.Sprint(r.config.PrLimits.MaxOpenFiles),
+		fmt.Sprint(r.config.PrLimits.MaxFileSize),
+		fmt.Sprint(r.mfest.TaskTimeoutSeconds),
 		c.EntryPoint,
 	}
 	cmd := []string{}
