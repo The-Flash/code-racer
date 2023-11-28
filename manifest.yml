@@ -30,3 +30,12 @@ runtimes:
     setup: "/runners/go/setup.sh"
     labels:
       runtime: go
+
+  - language: php
+    schedulingAlgorithm: round-robin
+    image: php:8.2-fpm-alpine
+    instances: 2
+    runner: "/runners/php/run.sh"
+    setup: "/runners/php/setup.sh"
+    labels:
+      runtime: php
