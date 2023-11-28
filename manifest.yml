@@ -32,6 +32,7 @@ runtimes:
       runtime: go
 
   - language: php
+    version: 8.2.13
     schedulingAlgorithm: round-robin
     image: php:8.2-fpm-alpine
     instances: 2
