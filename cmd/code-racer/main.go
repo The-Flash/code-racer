@@ -20,6 +20,12 @@ import (
 	"github.com/sarulabs/di/v2"
 )
 
+// @title Code Racer API
+// @version 1.0
+// @description A Remote Code Execution Engine build with Go
+
+// @host localhost:8000
+// @basePath /api/v1
 func main() {
 	flag.Parse()
 	err := godotenv.Load()

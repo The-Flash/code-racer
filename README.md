@@ -86,7 +86,14 @@ This is a security measure to prevent tasks submitted from accessing the interne
 
 ## API Documentation
 
-## Public API
+### Swagger Docs
+
+```
+/api/v1/swagger
+```
+
+
+### Public API
 
 ```
 POST https://code-racer-api.codewithflash.com/api/v1/execute

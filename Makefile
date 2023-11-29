@@ -30,3 +30,6 @@ compose-up:
 
 test:
 	go test -v ./...
+
+docs:
+	$(shell go env GOPATH)/bin/swag init -g ./cmd/code-racer/main.go -o ./internal/doc

@@ -6,6 +6,7 @@ import (
 	"log"
 	"time"
 
+	_ "github.com/The-Flash/code-racer/internal/doc"
 	"github.com/The-Flash/code-racer/internal/execution"
 	"github.com/The-Flash/code-racer/internal/file_system"
 	"github.com/The-Flash/code-racer/internal/manifest"
@@ -13,6 +14,7 @@ import (
 	"github.com/The-Flash/code-racer/pkg/models"
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/swagger"
 	"github.com/sarulabs/di/v2"
 )
 
@@ -33,17 +35,38 @@ func (r *Router) Setup(route fiber.Router, ctn di.Container) {
 	route.Get("/health", r.health)
 	route.Get("/runtimes", r.runtimes)
 	route.Post("/execute", r.execute)
+	route.Get("/swagger/*", swagger.HandlerDefault)
 }
 
+// @summary Health check
+// @description Health check endpoint
+// @produce plain
+// @success 200 {string} OK
+// @router /health [get]
 func (r *Router) health(ctx *fiber.Ctx) error {
 	return ctx.SendString("OK")
 }
 
+// @summary Runtimes
+// @description Get available runtimes
+// @accept json
+// @produce json
+// @router /runtimes [get]
+// @success 200 {array} manifest.ManifestRuntime
 func (r *Router) runtimes(ctx *fiber.Ctx) error {
 	return ctx.JSON(r.mfest.Runtimes)
 
 }
 
+// @summary Execute
+// @description Execute code
+// @accept json
+// @produce json
+// @param body body models.ExecutionRequest true "Execution request"
+// @router /execute [post]
+// @success 200 {object} models.ExecutionResponse
+// @failure 400 {string} Bad Request
+// @failure 500 {string} Internal Server Error
 func (r *Router) execute(ctx *fiber.Ctx) error {
 	validate := validator.New()
 	body := new(models.ExecutionRequest)

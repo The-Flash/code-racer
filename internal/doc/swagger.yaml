@@ -1,0 +1,107 @@
+basePath: /api/v1
+definitions:
+  manifest.ManifestRuntime:
+    properties:
+      language:
+        type: string
+      version:
+        type: string
+    type: object
+  models.ExecutionFile:
+    properties:
+      content:
+        type: string
+      name:
+        type: string
+    required:
+    - content
+    - name
+    type: object
+  models.ExecutionRequest:
+    properties:
+      entrypoint:
+        type: string
+      files:
+        items:
+          $ref: '#/definitions/models.ExecutionFile'
+        type: array
+      language:
+        type: string
+    required:
+    - entrypoint
+    - files
+    - language
+    type: object
+  models.ExecutionResponse:
+    properties:
+      executionTime:
+        type: string
+      preparationTime:
+        type: string
+      stderr:
+        type: string
+      stdout:
+        type: string
+    type: object
+host: localhost:8000
+info:
+  contact: {}
+  description: A Remote Code Execution Engine build with Go
+  title: Code Racer API
+  version: "1.0"
+paths:
+  /execute:
+    post:
+      consumes:
+      - application/json
+      description: Execute code
+      parameters:
+      - description: Execution request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/models.ExecutionRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ExecutionResponse'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Execute
+  /health:
+    get:
+      description: Health check endpoint
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: Health check
+  /runtimes:
+    get:
+      consumes:
+      - application/json
+      description: Get available runtimes
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/manifest.ManifestRuntime'
+            type: array
+      summary: Runtimes
+swagger: "2.0"

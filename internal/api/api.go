@@ -52,7 +52,7 @@ func (api *API) SetupAPI(ctn di.Container) {
 
 	// 5 requests per second
 	api.app.Use(limiter.New(limiter.Config{
-		Max:               5,
+		Max:               10,
 		Expiration:        1 * time.Second,
 		LimiterMiddleware: limiter.SlidingWindow{},
 	}))

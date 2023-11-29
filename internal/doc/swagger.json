@@ -1,0 +1,163 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "A Remote Code Execution Engine build with Go",
+        "title": "Code Racer API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:8000",
+    "basePath": "/api/v1",
+    "paths": {
+        "/execute": {
+            "post": {
+                "description": "Execute code",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Execute",
+                "parameters": [
+                    {
+                        "description": "Execution request",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.ExecutionRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.ExecutionResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/health": {
+            "get": {
+                "description": "Health check endpoint",
+                "produces": [
+                    "text/plain"
+                ],
+                "summary": "Health check",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/runtimes": {
+            "get": {
+                "description": "Get available runtimes",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Runtimes",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/manifest.ManifestRuntime"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "manifest.ManifestRuntime": {
+            "type": "object",
+            "properties": {
+                "language": {
+                    "type": "string"
+                },
+                "version": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.ExecutionFile": {
+            "type": "object",
+            "required": [
+                "content",
+                "name"
+            ],
+            "properties": {
+                "content": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.ExecutionRequest": {
+            "type": "object",
+            "required": [
+                "entrypoint",
+                "files",
+                "language"
+            ],
+            "properties": {
+                "entrypoint": {
+                    "type": "string"
+                },
+                "files": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.ExecutionFile"
+                    }
+                },
+                "language": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.ExecutionResponse": {
+            "type": "object",
+            "properties": {
+                "executionTime": {
+                    "type": "string"
+                },
+                "preparationTime": {
+                    "type": "string"
+                },
+                "stderr": {
+                    "type": "string"
+                },
+                "stdout": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
