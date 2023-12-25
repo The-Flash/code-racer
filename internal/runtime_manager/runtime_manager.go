@@ -26,6 +26,7 @@ type RuntimeManager struct {
 	config *config.Config
 	cli    *client.Client
 	mfest  *manifest.Manifest
+	mu     sync.Mutex
 }
 
 type RuntimeConfig struct {
@@ -87,7 +88,9 @@ func (r *RuntimeManager) GetContainersForRuntime(rt *manifest.ManifestRuntime) (
 
 	for _, container := range containers {
 		if r.IsContainerReady(container.ID) {
+			r.mu.Lock()
 			c = append(c, container)
+			r.mu.Unlock()
 		}
 	}
 	return c, nil
