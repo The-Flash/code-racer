@@ -40,3 +40,13 @@ runtimes:
     setup: "/runners/php/setup.sh"
     labels:
       runtime: php
+
+  - language: java
+    version: 1.8.0_392
+    schedulingAlgorithm: round-robin
+    image: amazoncorretto:8-alpine3.16
+    instances: 2
+    runner: "/runners/java/run.sh"
+    setup: "/runners/java/setup.sh"
+    labels:
+      runtime: java
