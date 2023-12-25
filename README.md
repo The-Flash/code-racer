@@ -154,6 +154,6 @@ Response
 
 ## Supported Languages
 
-```python```, ```node```, ```go```, ```php```, ```java```
+```python```, ```node```, ```go```, ```php```, ```java```, ```ruby```
 
 More to come
