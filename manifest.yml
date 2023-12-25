@@ -50,3 +50,13 @@ runtimes:
     setup: "/runners/java/setup.sh"
     labels:
       runtime: java
+
+  - language: ruby
+    version: 3.2.2
+    schedulingAlgorithm: round-robin
+    image: ruby:3.2.2-alpine3.19
+    instances: 2
+    runner: "/runners/ruby/run.sh"
+    setup: "/runners/ruby/setup.sh"
+    labels:
+      runtime: ruby
